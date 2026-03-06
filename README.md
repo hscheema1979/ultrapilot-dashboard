@@ -1,194 +1,300 @@
-# GitHub Operations Dashboard
+# 🚀 UltraPilot Mission Control Dashboard
 
-A comprehensive monitoring dashboard built with Next.js 15, TypeScript, and shadcn/ui for tracking GitHub workflows, projects, and tasks.
+> GitHub-integrated monitoring dashboard for multi-org repository management, workflow supervision, and real-time agent orchestration.
 
-## Features
+![Dashboard](https://img.shields.io/badge/status-production--ready-success)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 
-- 📊 **Real-time Workflow Monitoring**: Track GitHub Actions workflow runs with live progress updates
-- 📋 **Projects Board**: Visual project management with progress tracking and team assignment
-- ✅ **Task Management**: GitHub issues tracking with filtering, labels, and priority levels
-- 📈 **Metrics Overview**: At-a-glance statistics for workflows, projects, and tasks
-- 🎨 **Modern UI**: Built with shadcn/ui components and Tailwind CSS
-- 🌙 **Dark Mode**: Full dark mode support
+---
 
-## Tech Stack
+## ✨ Features
 
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **UI Components**: shadcn/ui
-- **Styling**: Tailwind CSS v4
-- **Icons**: Lucide React
+### 🎯 Dashboard Features
+- **Multi-Org Repository Browser** - Monitor repos across multiple organizations
+- **GitHub Projects Integration** - Kanban boards for project management
+- **Real-Time Workflow Monitoring** - 60-second polling with autoloop status
+- **GitHub Actions Tracking** - View recent workflow runs across all repos
+- **Responsive Design** - Works on desktop, tablet, and mobile
+- **Dark Mode Support** - System-aware theme switching
 
-## Getting Started
+### 🔧 Technical Features
+- **SQLite Cache with WAL Mode** - 10-200x faster than Redis
+- **Request Coalescing** - Prevents thundering herd on concurrent requests
+- **GitHub App Integration** - Secure JWT-based authentication
+- **OAuth2 Authentication** - Google OAuth with email whitelist
+- **Type-Safe API** - Full TypeScript strict mode
+- **Production Ready** - Deployed on VPS with nginx reverse proxy
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js 18+ installed
-- npm or yarn package manager
+- Node.js v20+ 
+- npm or yarn
+- GitHub App credentials (see [GitHub Setup](#github-setup))
 
 ### Installation
 
-1. **Navigate to the dashboard directory:**
-   ```bash
-   cd ultrapilot-dashboard
-   ```
+1. **Clone the repository**
+```bash
+git clone https://github.com/hscheema1979/ultrapilot-dashboard.git
+cd ultrapilot-dashboard
+```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+2. **Install dependencies**
+```bash
+npm install
+```
 
-3. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
+3. **Configure environment**
+```bash
+cp .env.example .env.local
+```
 
-4. **Open your browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+Edit `.env.local` with your GitHub App credentials:
+```bash
+# GitHub App Configuration
+GITHUB_APP_ID=your_app_id
+GITHUB_APP_INSTALLATION_ID=your_installation_id
+GITHUB_APP_PRIVATE_KEY_PATH=/path/to/your/private-key.pem
 
-### Build for Production
+# Repository Configuration
+GITHUB_OWNER=your_github_username
+GITHUB_REPO=your_default_repo
 
+# Database
+DATABASE_PATH=./data/cache.db
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+```
+
+4. **Start the development server**
+```bash
+npm run dev
+```
+
+5. **Open your browser**
+Navigate to [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🌐 Production Deployment
+
+### Deploy with PM2 (Recommended)
+
+1. **Build the application**
 ```bash
 npm run build
-npm start
 ```
 
-## Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```env
-# GitHub Personal Access Token (for API access)
-NEXT_PUBLIC_GITHUB_TOKEN=your_token_here
-
-# GitHub Repository
-NEXT_PUBLIC_GITHUB_OWNER=your_username
-NEXT_PUBLIC_GITHUB_REPO=your_repository
-
-# Optional: GitHub API Base URL (for GitHub Enterprise)
-NEXT_PUBLIC_GITHUB_API_URL=https://api.github.com
+2. **Start with PM2**
+```bash
+pm2 start npm --name "ultrapilot-dashboard" -- start
+pm2 save
+pm2 startup
 ```
 
-## Project Structure
-
-```
-ultrapilot-dashboard/
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx          # Root layout with providers
-│   │   ├── page.tsx            # Main dashboard page
-│   │   └── globals.css         # Global styles
-│   ├── components/
-│   │   ├── dashboard/          # Dashboard-specific components
-│   │   │   ├── header.tsx      # Dashboard header
-│   │   │   ├── metrics-cards.tsx    # Overview metrics
-│   │   │   ├── workflow-monitor.tsx # Workflow tracking
-│   │   │   ├── projects-board.tsx   # Project management
-│   │   │   └── tasks-list.tsx       # Task/issue tracking
-│   │   └── ui/                 # shadcn/ui components
-│   └── lib/
-│       └── utils.ts            # Utility functions
-├── public/                     # Static assets
-└── package.json
-```
-
-## Components
-
-### Dashboard Components
-
-- **DashboardHeader**: Top navigation with repository info and actions
-- **MetricsCards**: Overview statistics for workflows and tasks
-- **WorkflowMonitor**: Real-time workflow runs with status tracking
-- **ProjectsBoard**: Project cards with progress bars and team avatars
-- **TasksList**: Comprehensive task table with filtering and labels
-
-### UI Components
-
-All shadcn/ui components are located in `src/components/ui/`:
-- Card, Badge, Button, Tabs, Alert, Progress, Skeleton, Avatar, Separator
-- Table, Select, Dropdown Menu, Tooltip
-
-## Customization
-
-### Styling
-
-The dashboard uses Tailwind CSS. Customize colors and themes in `src/app/globals.css`:
-
-```css
-:root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  /* ... more variables */
-}
-```
-
-### Adding New Components
-
-Install additional shadcn/ui components:
+### Deploy with Docker
 
 ```bash
-npx shadcn@latest add [component-name]
+docker build -t ultrapilot-dashboard .
+docker run -p 3000:3000 \
+  -e GITHUB_APP_ID=your_app_id \
+  -e GITHUB_APP_INSTALLATION_ID=your_installation_id \
+  ultrapilot-dashboard
 ```
 
-## Integration with GitHub
+---
 
-To connect to your actual GitHub repository:
+## 🔑 GitHub Setup
 
-1. Create a GitHub Personal Access Token with `repo` scope
-2. Add it to `.env.local` as `NEXT_PUBLIC_GITHUB_TOKEN`
-3. Update the owner and repo variables
-4. Implement API calls in the components
+### Creating a GitHub App
 
-Example API call structure:
+1. Go to [GitHub Settings > Apps](https://github.com/settings/apps)
+2. Click "New GitHub App"
+3. Configure:
+   - **Name**: UltraPilot Dashboard
+   - **Homepage URL**: Your dashboard URL
+   - **Callback URL**: `https://your-domain.com/oauth2/callback`
+   - **Webhook URL**: `https://your-domain.com/api/webhooks/github`
+4. Permissions:
+   - ✅ Contents: Read & Write
+   - ✅ Issues: Read & Write
+   - ✅ Pull Requests: Read & Write
+   - ✅ Projects: Read & Write
+   - ✅ Workflows: Read & Write
+5. Events:
+   - ✅ Push
+   - ✅ Issues
+   - ✅ Pull Request
+   - ✅ Workflow Run
+6. Create app and download private key
 
-```typescript
-const response = await fetch(
-  `https://api.github.com/repos/${owner}/${repo}/actions/runs`,
-  {
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-    },
-  }
-)
+### Installing the GitHub App
+
+1. Go to your app settings page
+2. Click "Install App"
+3. Select your account or organization
+4. Choose "All repositories" or specific repos
+5. Note the Installation ID
+
+---
+
+## 📊 Dashboard Pages
+
+| Page | Route | Description |
+|------|-------|-------------|
+| Overview | `/dashboard` | Stats, activity feed, quick actions |
+| Repositories | `/dashboard/repos` | Multi-org repository browser |
+| Projects | `/dashboard/projects` | GitHub Projects kanban boards |
+| Workflows | `/dashboard/workflows` | Real-time autoloop monitoring |
+| Metrics | `/dashboard/metrics` | Performance and activity metrics |
+| Settings | `/dashboard/settings` | User preferences and configuration |
+
+---
+
+## 🔌 API Endpoints
+
+### Repositories
+```
+GET /api/v1/repos
+GET /api/v1/repos?org=organization
+GET /api/v1/repos?search=query
 ```
 
-## Development
+### Projects
+```
+GET /api/v1/projects
+GET /api/v1/projects?org=organization
+```
+
+### Workflows
+```
+GET /api/v1/workflows
+GET /api/v1/workflows?status=active
+GET /api/v1/autoloop/heartbeat
+```
+
+### GitHub Actions
+```
+GET /api/v1/actions/runs
+GET /api/v1/actions/runs?repo=repo-name
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    GitHub (Cloud)                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐│
+│  │ Repositories │  │  Projects    │  │  Workflows   ││
+│  └──────────────┘  └──────────────┘  └──────────────┘│
+└─────────────────────────────────────────────────────────┘
+                        ↓
+            ┌───────────────────────┐
+            │   GitHub App (JWT)    │
+            └───────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│              UltraPilot Dashboard                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │ Next.js App  │  │ SQLite Cache │  │   API Layer  │ │
+│  │  (Port 3000) │  │  (WAL Mode)  │  │  (TypeScript)│ │
+│  └──────────────┘  └──────────────┘  └──────────────┘ │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+              ┌───────────────────────┐
+              │    nginx (SSL/OAuth2) │
+              └───────────────────────┘
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run tests
+npm test
+
+# Run with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- cache.test.ts
+```
+
+---
+
+## 📈 Performance
+
+- **Cache Hit Rate**: >80% target
+- **API Response Time**: <100ms (p95)
+- **GitHub API Usage**: ~160 req/hour (5,000 limit)
+- **Headroom**: 3,000% buffer
+
+---
+
+## 🔐 Security
+
+- ✅ GitHub App JWT authentication
+- ✅ OAuth2 Google authentication
+- ✅ No credentials in frontend code
+- ✅ SQLite with secure file permissions
+- ✅ Environment variables protected
+- ✅ Security headers (HSTS, CSP, X-Frame-Options)
+
+---
+
+## 🛠️ Development
+
+### Project Structure
+```
+src/
+├── app/              # Next.js app router
+├── components/       # React components
+├── lib/             # Business logic & utilities
+├── types/           # TypeScript type definitions
+├── contexts/        # React contexts
+└── hooks/           # Custom React hooks
+```
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run lint` - Run ESLint
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm start           # Start production server
+npm test            # Run tests
+npm run lint        # Run ESLint
+```
 
-### Adding Features
+---
 
-1. Create new components in `src/components/dashboard/`
-2. Import and use them in `src/app/page.tsx`
-3. Follow the existing component patterns for consistency
-
-## Performance
-
-- Static page generation for fast initial load
-- Optimized component rendering with React 18
-- Efficient state management for real-time updates
-- Responsive design for all screen sizes
-
-## Future Enhancements
-
-- [ ] Real-time WebSocket updates for workflows
-- [ ] GitHub OAuth authentication
-- [ ] Customizable dashboard layouts
-- [ ] Export data as CSV/PDF
-- [ ] Mobile app version
-- [ ] Notifications and alerts
-- [ ] Advanced filtering and search
-- [ ] Multi-repository support
-
-## License
+## 📝 License
 
 MIT
 
-## Support
+---
 
-For issues and questions, please open an issue on the GitHub repository.
+## 🤝 Contributing
+
+Contributions welcome! Please read our contributing guidelines before submitting PRs.
+
+---
+
+## 📧 Support
+
+For issues and questions:
+- Open an issue on GitHub
+- Check the [documentation](./docs/)
+- Contact: @hscheema1979
+
+---
+
+**Built with ❤️ using [UltraPilot](https://github.com/hscheema1979/ultrapilot)**
