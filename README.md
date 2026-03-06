@@ -1,6 +1,6 @@
-# 🚀 UltraPilot Mission Control Dashboard
+# 🎛️ Control Room
 
-> GitHub-integrated monitoring dashboard for multi-org repository management, workflow supervision, and real-time agent orchestration.
+> Central command and control dashboard for GitHub-integrated monitoring, multi-org repository management, workflow supervision, and real-time agent orchestration.
 
 ![Dashboard](https://img.shields.io/badge/status-production--ready-success)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
@@ -40,8 +40,8 @@
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/hscheema1979/ultrapilot-dashboard.git
-cd ultrapilot-dashboard
+git clone https://github.com/hscheema1979/control-room.git
+cd control-room
 ```
 
 2. **Install dependencies**
@@ -93,7 +93,7 @@ npm run build
 
 2. **Start with PM2**
 ```bash
-pm2 start npm --name "ultrapilot-dashboard" -- start
+pm2 start npm --name "control-room" -- start
 pm2 save
 pm2 startup
 ```
@@ -101,11 +101,11 @@ pm2 startup
 ### Deploy with Docker
 
 ```bash
-docker build -t ultrapilot-dashboard .
+docker build -t control-room .
 docker run -p 3000:3000 \
   -e GITHUB_APP_ID=your_app_id \
   -e GITHUB_APP_INSTALLATION_ID=your_installation_id \
-  ultrapilot-dashboard
+  control-room
 ```
 
 ---
@@ -202,7 +202,7 @@ GET /api/v1/actions/runs?repo=repo-name
             └───────────────────────┘
                         ↓
 ┌─────────────────────────────────────────────────────────┐
-│              UltraPilot Dashboard                      │
+│                   Control Room                         │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
 │  │ Next.js App  │  │ SQLite Cache │  │   API Layer  │ │
 │  │  (Port 3000) │  │  (WAL Mode)  │  │  (TypeScript)│ │
