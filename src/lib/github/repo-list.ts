@@ -137,22 +137,26 @@ export async function fetchAllOrgs(
 
   console.debug(`[RepoList] Fetching repos from ${orgs.length} organizations in parallel`)
 
-  // Fetch from all organizations in parallel
-  const fetchPromises = orgs.map((org) =>
-    fetchOrgRepos(org).catch((error) => {
-      console.error(`[RepoList] Failed to fetch repos for ${org}:`, error)
-      return [] // Return empty array on error to not fail entire request
-    })
-  )
+  // For GitHub App installations, only fetch once since /installation/repositories
+  // returns ALL repos the app has access to, not org-specific
+  const uniqueRepos = new Map<number, GitHubRepository>()
 
-  const results = await Promise.all(fetchPromises)
+  // Just fetch from the first org since they all return the same data
+  const repos = await fetchOrgRepos(orgs[0]).catch((error) => {
+    console.error(`[RepoList] Failed to fetch repos:`, error)
+    return [] as GitHubRepository[]
+  })
 
-  // Flatten and merge results
-  const allRepos = results.flat()
+  // Deduplicate by ID
+  repos.forEach((repo) => {
+    uniqueRepos.set(repo.id, repo)
+  })
 
-  console.debug(`[RepoList] Fetched ${allRepos.length} total repositories`)
+  const dedupedRepos = Array.from(uniqueRepos.values())
 
-  return allRepos
+  console.debug(`[RepoList] Fetched ${repos.length} total repositories, ${dedupedRepos.length} after deduplication`)
+
+  return dedupedRepos
 }
 
 // ============================================================================
