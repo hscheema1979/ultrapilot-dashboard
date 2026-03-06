@@ -100,9 +100,8 @@ ${data.description}
 
 *This workflow was created via GitHub Mission Control Dashboard*
 *UltraPilot will process this according to the ${data.workflowType} workflow*
-`
-`Labels: ${typeEmoji[data.type]}, ${data.priority}, ${workflowLabels[data.workflowType]}, status:pending`
-`
+
+Labels: ${typeEmoji[data.type]}, ${data.priority}, ${workflowLabels[data.workflowType]}, status:pending`
 
 // POST /api/workflows
 export async function POST(request: NextRequest) {
