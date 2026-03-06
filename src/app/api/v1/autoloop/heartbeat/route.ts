@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get Octokit instance
-    const octokit = await getOctokit()
+    const octokit = await getOctokit() as any
 
     // Fetch heartbeat status
     const heartbeat = await getAutoloopHeartbeat(octokit, owner, repo)

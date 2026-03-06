@@ -107,19 +107,20 @@ export async function GET(request: NextRequest) {
     }
 
     // Get Octokit instance
-    const octokit = await getOctokit()
+    const octokit = await getOctokit() as any
 
     // Fetch action runs
     const { runs, totalCount } = await listActionRuns(octokit, owner, repo, filters)
 
     // Calculate pagination metadata
-    const totalPages = Math.ceil(totalCount / filters.per_page)
+    const perPage = filters.per_page || 10
+    const totalPages = Math.ceil(totalCount / perPage)
 
     return NextResponse.json({
       runs,
       totalCount,
       page: filters.page,
-      perPage: filters.per_page,
+      perPage,
       totalPages,
     })
   } catch (error) {

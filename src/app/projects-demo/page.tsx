@@ -95,7 +95,7 @@ export default function ProjectsDemoPage() {
             </p>
             <div className="bg-muted p-3 rounded-md">
               <code className="text-sm">
-                curl -X POST "/api/v1/projects" -d '{{"org":"hscheema1979"}}'
+                {'curl -X POST "/api/v1/projects" -d \'{ "org": "hscheema1979" }\''}
               </code>
             </div>
           </div>

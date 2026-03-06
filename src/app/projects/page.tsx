@@ -2,23 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Board, List, Timeline, Package, Search, Filter } from "lucide-react"
-
-'use client'
-
-import { useState, useEffect } from 'react'
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Board, List, Timeline, Plus, Search, Filter, ArrowRight } from "lucide-react"
+import { LayoutDashboard, List, Timer, Package, Search, Filter, ArrowRight, Plus } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export default function ProjectsPage() {
@@ -98,16 +88,16 @@ export default function ProjectsPage() {
         <Tabs defaultValue="board">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="board" className="flex items-center gap-2">
-              <Board className="h-4 w-4" />
-              Board
+              <LayoutDashboard className="h-4 w-4" />
+              LayoutDashboard
             </TabsTrigger>
             <TabsTrigger value="list" className="flex items-center gap-2">
               <List className="h-4 w-4" />
               List
             </TabsTrigger>
             <TabsTrigger value="timeline" className="flex items-center gap-2">
-              <Timeline className="h-4 w-4" />
-              Timeline
+              <Timer className="h-4 w-4" />
+              Timer
             </TabsTrigger>
             <TabsTrigger value="backlog" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
@@ -148,9 +138,9 @@ export default function ProjectsPage() {
                           </Card>
                         )
                       })
-                  )
+                  )}
                 </div>
-              )}
+              ))}
             </div>
           </TabsContent>
 
@@ -224,8 +214,8 @@ export default function ProjectsPage() {
           <TabsContent value="timeline">
             <Card>
               <CardContent className="p-8 text-center text-muted-foreground">
-                <Timeline className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Timeline view coming soon - Visualize workflow phases over time</p>
+                <Timer className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>Timer view coming soon - Visualize workflow phases over time</p>
               </CardContent>
             </Card>
           </TabsContent>

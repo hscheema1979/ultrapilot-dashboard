@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate state parameter
-    if (!['open', 'closed', 'all'].includes(params.state)) {
+    if (!params.state || !['open', 'closed', 'all'].includes(params.state)) {
       return NextResponse.json(
         {
           error: 'Bad Request',
@@ -83,7 +83,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate page number
-    if (params.page < 1) {
+    const page = params.page || 1
+    if (page < 1) {
       return NextResponse.json(
         {
           error: 'Bad Request',
@@ -95,7 +96,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate per_page
-    if (params.per_page < 1 || params.per_page > 100) {
+    const perPage = params.per_page || 30
+    if (perPage < 1 || perPage > 100) {
       return NextResponse.json(
         {
           error: 'Bad Request',

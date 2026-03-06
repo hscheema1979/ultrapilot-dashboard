@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation error',
-        details: error.errors,
+        details: error.issues,
       }, { status: 400 })
     }
 
@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
     const workflows = data.map((issue: any) => ({
       id: issue.id,
       title: issue.title.replace(/^\[[A-Z]+\]\s*/, ''),
-      type: issue.labels.find((l: any) => l.name.includes('feature-request' || 'bug-report' || 'code-review'))?.name || 'unknown',
+      type: issue.labels.find((l: any) => ['feature-request', 'bug-report', 'code-review'].includes(l.name))?.name || 'unknown',
       priority: issue.labels.find((l: any) => ['low', 'medium', 'high', 'critical'].includes(l.name))?.name || 'medium',
       workflowType: issue.labels.find((l: any) => l.name.startsWith('workflow:'))?.name.replace('workflow:', '') || 'quick',
       status: issue.labels.find((l: any) => l.name.startsWith('status:'))?.name.replace('status:', '') || 'pending',
