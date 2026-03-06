@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Production
+*.log
+logs/
+
+# Environment (security)
+.env.local
+.env*.local
+.env.backup
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+.temp/
+.cache/
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+data/
+
+# UltraPilot internal
+.ultra/state/
