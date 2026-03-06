@@ -72,7 +72,7 @@ function generateIssueBody(data: WorkflowSubmitData, intent: any): string {
     queue: 'workflow:task-queue',
   }
 
-  return `## [${data.type.toUpperCase()}] ${data.title}
+  const body = `## [${data.type.toUpperCase()}] ${data.title}
 
 **Type:** ${data.type}
 **Priority:** ${data.priority}
@@ -98,10 +98,13 @@ ${data.description}
 
 ---
 
-*This workflow was created via GitHub Mission Control Dashboard*
+*This workflow was created via Control Room*
 *UltraPilot will process this according to the ${data.workflowType} workflow*
 
-Labels: ${typeEmoji[data.type]}, ${data.priority}, ${workflowLabels[data.workflowType]}, status:pending``
+Labels: ${typeEmoji[data.type]}, ${data.priority}, ${workflowLabels[data.workflowType]}, status:pending`
+
+  return body
+}
 
 // POST /api/workflows
 export async function POST(request: NextRequest) {

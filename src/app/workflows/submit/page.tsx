@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
-import { Sparkles, GitPullRequest, BugWarning, Timer, Zap, List } from "lucide-react"
+import { Sparkles, GitPullRequest, FileWarning, Timer, Zap, List } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 interface WorkflowFormData {
@@ -128,7 +128,7 @@ export default function WorkflowSubmitPage() {
                     Feature Request
                   </TabsTrigger>
                   <TabsTrigger value="bug-report" className="flex items-center gap-2">
-                    <BugWarning className="h-4 w-4" />
+                    <FileWarning className="h-4 w-4" />
                     Bug Report
                   </TabsTrigger>
                   <TabsTrigger value="code-review" className="flex items-center gap-2">

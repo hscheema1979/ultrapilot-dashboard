@@ -128,27 +128,29 @@ export default function ProjectsPage() {
                   ) : (
                     workflows
                       .filter(w => w.status === status)
-                      .map(workflow => (
-                        <Card key={workflow.id} className="mb-2 cursor-pointer hover:bg-accent/50" onClick={() => window.open(workflow.url, '_blank')}>
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-2">
-                              <Badge variant={
-                                status === 'completed' ? 'default' :
-                                status === 'running' ? 'default' :
-                                status === 'failed' ? 'destructive' : 'secondary'
-                              }>
-                                {workflow.status}
-                              </Badge>
-                              <Badge variant="outline">{workflow.workflowType}</Badge>
-                            </div>
-                            <h4 className="font-medium text-sm mb-2">{workflow.title}</h4>
-                            <p className="text-xs text-muted-foreground">{workflow.type}</p>
-                          </CardContent>
-                        </Card>
-                      ))}
-                  )}
+                      .map(workflow => {
+                        const badgeVariant = status === 'completed' ? 'default' :
+                                            status === 'running' ? 'default' :
+                                            status === 'failed' ? 'destructive' : 'secondary'
+
+                        return (
+                          <Card key={workflow.id} className="mb-2 cursor-pointer hover:bg-accent/50">
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <Badge variant={badgeVariant}>
+                                  {workflow.status}
+                                </Badge>
+                                <Badge variant="outline">{workflow.workflowType}</Badge>
+                              </div>
+                              <h4 className="font-medium text-sm mb-2">{workflow.title}</h4>
+                              <p className="text-xs text-muted-foreground">{workflow.type}</p>
+                            </CardContent>
+                          </Card>
+                        )
+                      })
+                  )
                 </div>
-              ))}
+              )}
             </div>
           </TabsContent>
 

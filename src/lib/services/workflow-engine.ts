@@ -139,11 +139,10 @@ ${input.description}
 
 ---
 
-*Submitted via GitHub Mission Control Dashboard*
+*Submitted via Control Room*
 *UltraPilot will process this as a **${input.workflowType}** workflow*
-`
 
-**Labels:** ${typeEmoji[input.type]}, ${input.priority}, workflow:${input.workflowType}, status:pending
+Labels: ${typeEmoji[input.type]}, ${input.priority}, workflow:${input.workflowType}, status:pending
 `
 
     try {
