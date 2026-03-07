@@ -6,11 +6,11 @@ import { usePathname } from "next/navigation"
 import {
   LayoutDashboard,
   FolderOpen,
-  FolderKanban,
-  Workflow,
-  RefreshCw,
-  BarChart3,
-  AlertCircle,
+  Activity,
+  GitBranch,
+  Eye,
+  Terminal,
+  Settings,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { NAV_ITEMS } from "@/lib/navigation"
@@ -62,13 +62,13 @@ export function MobileNav() {
 // Helper function to get icon component by name
 function getIcon(iconName: string) {
   const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+    Activity,
+    GitBranch,
     LayoutDashboard,
+    Eye,
     FolderOpen,
-    FolderKanban,
-    Workflow,
-    RefreshCw,
-    BarChart3,
-    AlertCircle,
+    Terminal,
+    Settings,
   }
   return icons[iconName] || LayoutDashboard
 }

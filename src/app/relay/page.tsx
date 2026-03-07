@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Zap, Users, Cpu, RefreshCw, ExternalLink, ArrowRight } from "lucide-react"
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
 
 interface RelayProject {
   id: string
@@ -73,7 +72,7 @@ export default function RelayPage() {
   const totalClients = projects.reduce((sum, p) => sum + p.clients, 0)
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center justify-between">
@@ -293,6 +292,6 @@ export default function RelayPage() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </div>
   )
 }

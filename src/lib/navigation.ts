@@ -14,7 +14,7 @@ export const NAV_ITEMS: NavItem[] = [
   // ACTIVE CONTROL - Submit & Monitor
   {
     title: "Control Center",
-    href: "/dashboard/control",
+    href: "/control",
     icon: "Activity",
     description: "Submit requests and monitor workflows",
   },
@@ -22,7 +22,7 @@ export const NAV_ITEMS: NavItem[] = [
   // WORKFLOW MANAGEMENT
   {
     title: "Active Workflows",
-    href: "/dashboard/workflows",
+    href: "/workflows",
     icon: "GitBranch",
     description: "View all workflow runs and their status",
   },
@@ -30,19 +30,19 @@ export const NAV_ITEMS: NavItem[] = [
   // MONITORING & VIEWING
   {
     title: "Dashboard",
-    href: "/dashboard",
+    href: "/",
     icon: "LayoutDashboard",
     description: "Overview and activity feed",
   },
   {
     title: "Traces",
-    href: "/dashboard/traces",
+    href: "/traces",
     icon: "Eye",
     description: "Full GitHub audit trail",
   },
   {
     title: "Repositories",
-    href: "/dashboard/repos",
+    href: "/repos",
     icon: "FolderOpen",
     description: "Browse and manage repositories",
   },
@@ -50,7 +50,7 @@ export const NAV_ITEMS: NavItem[] = [
   // WORKSPACE LINKS
   {
     title: "Workspaces",
-    href: "/dashboard/workspaces",
+    href: "/workspaces",
     icon: "Terminal",
     description: "Relay workspaces (Ubuntu, Dev, Projects)",
     divider: true,
@@ -59,7 +59,7 @@ export const NAV_ITEMS: NavItem[] = [
   // Settings
   {
     title: "Settings",
-    href: "/dashboard/settings",
+    href: "/settings",
     icon: "Settings",
     description: "Configure dashboard",
   },

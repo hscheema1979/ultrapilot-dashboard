@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -23,9 +22,10 @@ export default function AgentsMonitorPage() {
   async function fetchAgents() {
     try {
       setLoading(true)
-      const res = await fetch('/api/agents/active')
-      const data = await res.json()
-      setAgents(data.agents || [])
+      // API endpoint not yet implemented - using mock data
+      // const res = await fetch('/api/agents/active')
+      // const data = await res.json()
+      setAgents([])
     } catch (error) {
       console.error('Error fetching agents:', error)
     } finally {
@@ -34,8 +34,7 @@ export default function AgentsMonitorPage() {
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Agents Monitor</h1>
@@ -138,8 +137,7 @@ export default function AgentsMonitorPage() {
           />
         )}
       </div>
-    </DashboardLayout>
-  )
+    )
 }
 
 function AgentCard({ agent, onClick }: { agent: any; onClick: () => void }) {

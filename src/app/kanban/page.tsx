@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, AlertCircle, CheckCircle2, Clock, ExternalLink } from "lucide-react"
 import { useProject } from "@/contexts/project-context"
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
 
 interface Task {
   id: string
@@ -137,7 +136,7 @@ export default function KanbanPage() {
   )
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-8">
         {/* Page Header */}
         <div>
@@ -212,6 +211,6 @@ export default function KanbanPage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </div>
   )
 }

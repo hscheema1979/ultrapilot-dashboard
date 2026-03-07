@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -24,19 +23,15 @@ export default function GitHubIntegrationPage() {
   async function fetchGitHubData() {
     try {
       setLoading(true)
-      const [statusRes, boardsRes, activityRes] = await Promise.all([
-        fetch('/api/github/status'),
-        fetch('/api/github/boards'),
-        fetch('/api/github/activity')
-      ])
 
+      // Only fetch status endpoint for now
+      const statusRes = await fetch('/api/github/status')
       const statusData = await statusRes.json()
-      const boardsData = await boardsRes.json()
-      const activityData = await activityRes.json()
-
       setStatus(statusData)
-      setBoards(boardsData.boards || [])
-      setRecentActivity(activityData.activity || [])
+
+      // Other endpoints not yet implemented
+      setBoards([])
+      setRecentActivity([])
     } catch (error) {
       console.error('Error fetching GitHub data:', error)
     } finally {
@@ -47,7 +42,8 @@ export default function GitHubIntegrationPage() {
   async function handleSync() {
     setSyncing(true)
     try {
-      await fetch('/api/github/sync', { method: 'POST' })
+      // Sync endpoint not yet implemented
+      await new Promise(resolve => setTimeout(resolve, 1000))
       await fetchGitHubData()
     } catch (error) {
       console.error('Error syncing:', error)
@@ -58,17 +54,14 @@ export default function GitHubIntegrationPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="space-y-6">
-          <Skeleton className="h-96 w-full" />
-        </div>
-      </DashboardLayout>
+      <div className="space-y-6">
+        <Skeleton className="h-96 w-full" />
+      </div>
     )
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -241,8 +234,7 @@ export default function GitHubIntegrationPage() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
-  )
+    )
 }
 
 function formatTimestamp(timestamp: string): string {

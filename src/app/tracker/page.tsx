@@ -8,7 +8,6 @@ import { Progress } from "@/components/ui/progress"
 import { GitBranch, ExternalLink, Settings, CheckCircle2, AlertCircle, Clock } from "lucide-react"
 import { useProject } from "@/contexts/project-context"
 import Link from "next/link"
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
 
 interface ProjectMetrics {
   totalWorkflows: number
@@ -97,16 +96,16 @@ export default function TrackerPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      <div>
         <div className="text-center py-12">
           <div className="text-muted-foreground">Loading project metrics...</div>
         </div>
-      </DashboardLayout>
+      </div>
     )
   }
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-8">
         {/* Page Header */}
         <div>
@@ -232,6 +231,6 @@ export default function TrackerPage() {
           </Card>
         )}
       </div>
-    </DashboardLayout>
+    </div>
   )
 }
