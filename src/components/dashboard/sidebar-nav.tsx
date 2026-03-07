@@ -15,6 +15,15 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  LayoutGrid,
+  Activity,
+  Bot,
+  Github,
+  Terminal,
+  User,
+  Code,
+  HeartPulse,
+  BookOpen,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -67,10 +76,46 @@ export function SidebarNav({ className }: SidebarNavProps) {
       {/* Navigation Items */}
       <ScrollArea className="flex-1 px-2 py-4">
         <nav className="grid gap-1">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.map((item, index) => {
             const Icon = getIcon(item.icon)
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href))
             const badge = item.badge
+
+            // Add divider before items with divider=true
+            if (item.divider && index > 0) {
+              return (
+                <div key={item.href} className="space-y-1">
+                  <Separator className="my-2" />
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                      isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground",
+                      collapsed && "justify-center px-2"
+                    )}
+                  >
+                    <Icon className={cn("h-4 w-4 flex-shrink-0", !collapsed && "mr-2")} />
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1">{item.title}</span>
+                        {badge !== undefined && badge > 0 && (
+                          <Badge variant="secondary" className="ml-auto">
+                            {badge > 9 ? "9+" : badge}
+                          </Badge>
+                        )}
+                      </>
+                    )}
+                    {collapsed && badge !== undefined && badge > 0 && (
+                      <Badge variant="secondary" className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
+                        {badge > 9 ? "9+" : badge}
+                      </Badge>
+                    )}
+                  </Link>
+                </div>
+              )
+            }
 
             return (
               <Link
@@ -130,6 +175,15 @@ function getIcon(iconName: string) {
     BarChart3,
     AlertCircle,
     Settings,
+    LayoutGrid,
+    Activity,
+    Bot,
+    Github,
+    Terminal,
+    User,
+    Code,
+    HeartPulse,
+    BookOpen,
   }
   return icons[iconName] || LayoutDashboard
 }

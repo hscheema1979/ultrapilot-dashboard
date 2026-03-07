@@ -137,26 +137,117 @@ export default function DashboardPage() {
     openIssues: 0,
     projectsInProgress: 0,
     autoloopUptime: "0%",
+    successRate: 0,
+    completedToday: 0,
   })
   const [recentActivity, setRecentActivity] = React.useState<ActivityItem[]>([])
+  const [selectedOwner, setSelectedOwner] = React.useState("hscheema1979")
+  const [selectedRepo, setSelectedRepo] = React.useState("ultrapilot-dashboard")
 
-  // Fetch dashboard data
+  // Fetch dashboard data from REAL GitHub APIs
   React.useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch stats
-        const statsResponse = await fetch("/api/dashboard/stats")
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json()
-          setStats(statsData)
+        // Fetch real GitHub Actions runs
+        const actionsUrl = `/api/v1/actions/runs?owner=${selectedOwner}&repo=${selectedRepo}&status=in_progress`
+        const actionsResponse = await fetch(actionsUrl)
+
+        // Fetch real workflow issues
+        const workflowsUrl = `/api/v1/workflows?owner=${selectedOwner}&repo=${selectedRepo}&state=active`
+        const workflowsResponse = await fetch(workflowsUrl)
+
+        // Fetch autoloop heartbeat
+        const heartbeatUrl = `/api/v1/autoloop/heartbeat?owner=${selectedOwner}&repo=${selectedRepo}`
+        const heartbeatResponse = await fetch(heartbeatUrl)
+
+        // Fetch all repos for total count
+        const reposUrl = `/api/v1/repos?org=${selectedOwner}`
+        const reposResponse = await fetch(reposUrl)
+
+        // Process responses
+        let activeWorkflows = 0
+        let totalRepos = 0
+        let autoloopUptime = "0%"
+        let activities: ActivityItem[] = []
+
+        if (actionsResponse.ok) {
+          const actionsData = await actionsResponse.json()
+          activeWorkflows = actionsData.runs?.length || 0
+
+          // Add workflow runs to activity feed
+          actionsData.runs?.forEach((run: any) => {
+            activities.push({
+              id: `action-${run.id}`,
+              type: "workflow",
+              title: run.name,
+              description: `Run #${run.runNumber} - ${run.headCommitMessage || "No commit message"}`,
+              time: new Date(run.createdAt).toLocaleString(),
+              status: run.status === "in_progress" ? "running" : run.conclusion === "success" ? "success" : "error",
+              link: run.htmlUrl,
+            })
+          })
         }
 
-        // Fetch activity
-        const activityResponse = await fetch("/api/dashboard/activity")
-        if (activityResponse.ok) {
-          const activityData = await activityResponse.json()
-          setRecentActivity(activityData.activities || [])
+        if (workflowsResponse.ok) {
+          const workflowsData = await workflowsResponse.json()
+
+          // Add workflow issues to activity feed
+          workflowsData.workflows?.forEach((wf: any) => {
+            activities.push({
+              id: `workflow-${wf.issueNumber}`,
+              type: "workflow",
+              title: wf.title,
+              description: `Phase ${wf.phase} - ${wf.agent || "Unassigned"}`,
+              time: new Date(wf.updatedAt).toLocaleString(),
+              status: wf.state === "active" ? "running" : wf.state === "completed" ? "success" : "pending",
+              link: wf.htmlUrl,
+            })
+          })
         }
+
+        if (heartbeatResponse.ok) {
+          const heartbeatData = await heartbeatResponse.json()
+          autoloopUptime = `${heartbeatData.uptime || 0}%`
+
+          // Add heartbeat to activity
+          if (heartbeatData.lastHeartbeat) {
+            activities.push({
+              id: "heartbeat",
+              type: "autoloop",
+              title: "Autoloop Heartbeat",
+              description: `Cycle ${heartbeatData.cycleCount} - ${heartbeatData.activeWorkflows} active workflows`,
+              time: new Date(heartbeatData.lastHeartbeat).toLocaleString(),
+              status: heartbeatData.health === "healthy" ? "success" : "error",
+            })
+          }
+        }
+
+        if (reposResponse.ok) {
+          const reposData = await reposResponse.json()
+          totalRepos = reposData.repositories?.length || 0
+        }
+
+        // Sort activities by time (newest first)
+        activities.sort((a, b) => {
+          const timeA = new Date(a.time).getTime()
+          const timeB = new Date(b.time).getTime()
+          return timeB - timeA
+        })
+
+        // Take only the most recent 20 activities
+        activities = activities.slice(0, 20)
+
+        setStats({
+          totalRepos,
+          activeWorkflows,
+          openIssues: 0, // Could fetch from GitHub issues API
+          projectsInProgress: activeWorkflows,
+          autoloopUptime,
+          successRate: 0, // Could calculate from completed actions
+          completedToday: 0, // Could calculate from today's actions
+        })
+
+        setRecentActivity(activities)
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error)
       } finally {
@@ -165,7 +256,7 @@ export default function DashboardPage() {
     }
 
     fetchData()
-  }, [])
+  }, [selectedOwner, selectedRepo])
 
   if (isLoading) {
     return (
@@ -205,10 +296,26 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1">
-            Welcome back! Here's what's happening with your GitHub projects.
+            Real-time GitHub Actions workflow monitoring
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground">Repository:</span>
+            <select
+              value={`${selectedOwner}/${selectedRepo}`}
+              onChange={(e) => {
+                const [owner, repo] = e.target.value.split('/')
+                setSelectedOwner(owner)
+                setSelectedRepo(repo)
+              }}
+              className="px-3 py-1 border rounded-md bg-background"
+            >
+              <option value="hscheema1979/ultrapilot-dashboard">hscheema1979/ultrapilot-dashboard</option>
+              <option value="hscheema1979/control-room">hscheema1979/control-room</option>
+              <option value="hscheema1979/hscheema1979">hscheema1979/hscheema1979</option>
+            </select>
+          </div>
           <Button variant="outline" asChild>
             <Link href="/dashboard/workflows">
               <Play className="mr-2 h-4 w-4" />

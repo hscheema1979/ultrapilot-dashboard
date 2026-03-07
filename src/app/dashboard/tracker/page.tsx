@@ -225,7 +225,7 @@ export default function TrackerPage() {
               <p className="text-muted-foreground mb-4">
                 No projects enabled. Add projects to start tracking.
               </p>
-              <Link href="/projects">
+              <Link href="/dashboard/projects">
                 <Button>Add Projects</Button>
               </Link>
             </CardContent>

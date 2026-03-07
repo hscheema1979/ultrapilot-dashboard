@@ -37,27 +37,11 @@ export function DashboardHeader() {
 
           {/* Navigation and controls */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Link href="/tracker">
+            <Link href="/dashboard/workflows">
               <Button variant="outline" size="sm" asChild>
                 <span className="hidden sm:inline-flex">
-                  <LayoutGrid className="h-4 w-4 mr-2" />
-                  Tracker
-                </span>
-              </Button>
-            </Link>
-            <Link href="/kanban">
-              <Button variant="outline" size="sm" asChild>
-                <span className="hidden sm:inline-flex">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Kanban
-                </span>
-              </Button>
-            </Link>
-            <Link href="/projects">
-              <Button variant="outline" size="sm" asChild>
-                <span className="hidden sm:inline-flex">
-                  <GitBranch className="h-4 w-4 mr-2" />
-                  Projects
+                  <Activity className="h-4 w-4 mr-2" />
+                  New Workflow
                 </span>
               </Button>
             </Link>
@@ -158,7 +142,7 @@ export function DashboardHeader() {
                 <AlertCircle className="h-4 w-4 text-status-warning" />
                 <span>No project selected - {enabledProjectsCount} projects available</span>
                 <Button variant="link" size="sm" className="h-auto p-0 ml-2" asChild>
-                  <Link href="/projects">Configure projects</Link>
+                  <Link href="/dashboard/projects">Configure projects</Link>
                 </Button>
               </div>
             ) : (

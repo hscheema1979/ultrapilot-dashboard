@@ -36,7 +36,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
 import { cn } from "@/lib/utils"
 
 interface GithubDashboardHeaderProps {
@@ -48,7 +48,6 @@ export function GithubDashboardHeader({ notificationCount = 0 }: GithubDashboard
   const { theme, setTheme } = useTheme()
   const { currentOrg, switchOrg, availableOrgs, getOrgLabel } = useOrgSwitcher()
   const [searchQuery, setSearchQuery] = React.useState("")
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
   // Handle keyboard shortcut for search (Cmd+K)
   React.useEffect(() => {
@@ -74,84 +73,19 @@ export function GithubDashboardHeader({ notificationCount = 0 }: GithubDashboard
     }
   }
 
-  const navItems = [
-    { href: "/dashboard", icon: Rocket, label: "Dashboard" },
-    { href: "/dashboard/repos", icon: FolderOpen, label: "Repositories" },
-    { href: "/dashboard/projects", icon: FolderKanban, label: "Projects" },
-    { href: "/dashboard/workflows", icon: Workflow, label: "Workflows" },
-    { href: "/dashboard/autoloop", icon: RefreshCw, label: "Autoloop" },
-    { href: "/dashboard/metrics", icon: BarChart3, label: "Metrics" },
-    { href: "/dashboard/issues", icon: AlertCircle, label: "Issues" },
-  ]
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center px-4 lg:px-6">
-        {/* Logo and Mobile Menu Toggle */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
-              <SheetHeader className="sr-only">
-                <SheetTitle>Navigation Menu</SheetTitle>
-                <SheetDescription>Mobile navigation menu for UltraPilot Dashboard</SheetDescription>
-              </SheetHeader>
-              <div className="flex h-full flex-col">
-                <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-                  <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-                    <Rocket className="h-5 w-5" />
-                    <span className="">UltraPilot</span>
-                  </Link>
-                </div>
-                <div className="flex-1 overflow-auto py-2">
-                  <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-                    {navItems.map((item) => {
-                      const Icon = item.icon
-                      const isActive = pathname === item.href
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={cn(
-                            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all",
-                            isActive
-                              ? "bg-accent text-accent-foreground"
-                              : "text-muted-foreground hover:text-accent-foreground"
-                          )}
-                        >
-                          <Icon className="h-4 w-4" />
-                          {item.label}
-                        </Link>
-                      )
-                    })}
-                  </nav>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+        {/* Logo */}
+        <div className="flex items-center gap-2">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-            <Rocket className="h-5 w-5" />
-            <span className="">UltraPilot</span>
-          </Link>
-        </div>
-
-        {/* Desktop Logo */}
-        <div className="hidden lg:flex lg:items-center lg:gap-2">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-            <Rocket className="h-6 w-6" />
-            <span className="hidden xl:inline text-xl">UltraPilot Mission Control</span>
-            <span className="xl:hidden text-xl">UltraPilot</span>
+            <Rocket className="h-5 w-5 sm:h-6" />
+            <span className="hidden sm:inline text-base sm:text-xl">UltraPilot</span>
           </Link>
         </div>
 
         {/* Organization Selector */}
-        <div className="ml-4">
+        <div className="ml-4 hidden md:block">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">

@@ -5,23 +5,23 @@ import { useState, useEffect } from "react"
 import {
   BookOpen,
   Play,
-  Settings,
-  Code,
-  Activity,
   Rocket,
-  TrendingUp,
-  Shield,
+  Activity,
+  Settings,
   ChevronRight,
   Search,
-  Filter,
   Clock,
+  CheckCircle2,
+  ExternalLink,
+  GitBranch,
   User,
-  CheckCircle2
+  Zap
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
@@ -34,22 +34,11 @@ interface Playbook {
   id: string
   name: string
   description: string
-  workspace: "ultrapilot" | "trading-at"
   category: string
-  defaultAgent: string
-  estimatedDuration: string
-  phase: number
-  parameters: PlaybookParameter[]
   file: string
-}
-
-interface PlaybookParameter {
-  name: string
-  type: string
-  required: boolean
-  description: string
-  default?: string
-  options?: string[]
+  parameters?: string[]
+  githubWorkflow?: string
+  estimatedDuration?: string
 }
 
 export default function PlaybooksPage() {
@@ -57,92 +46,63 @@ export default function PlaybooksPage() {
   const [filteredPlaybooks, setFilteredPlaybooks] = useState<Playbook[]>([])
   const [selectedPlaybook, setSelectedPlaybook] = useState<Playbook | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
-  const [workspaceFilter, setWorkspaceFilter] = useState<string>("all")
   const [categoryFilter, setCategoryFilter] = useState<string>("all")
+  const [isLoading, setIsLoading] = useState(true)
   const [isExecuting, setIsExecuting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // Mock playbook data (in real implementation, fetch from API)
   useEffect(() => {
-    const mockPlaybooks: Playbook[] = [
-      {
-        id: "ultrapilot-dev-feature",
-        name: "Create New Feature",
-        description: "Create a new feature branch and scaffold feature files",
-        workspace: "ultrapilot",
-        category: "development",
-        defaultAgent: "ultra:executor",
-        estimatedDuration: "15 minutes",
-        phase: 1,
-        parameters: [
-          { name: "feature_name", type: "string", required: true, description: "Name of the feature" },
-          { name: "feature_type", type: "select", required: true, description: "Type of feature", options: ["frontend", "backend", "full-stack"] },
-          { name: "repo", type: "string", required: true, description: "Repository name", default: "ultrapilot-dashboard" }
-        ],
-        file: "ultrapilot/development/create-new-feature.md"
-      },
-      {
-        id: "ultrapilot-ops-health",
-        name: "System Health Check",
-        description: "Comprehensive system health check for UltraPilot dashboard",
-        workspace: "ultrapilot",
-        category: "operations",
-        defaultAgent: "ultra:autoloop-coordinator",
-        estimatedDuration: "2 minutes",
-        phase: 0,
-        parameters: [],
-        file: "ultrapilot/operations/health-check.md"
-      },
-      {
-        id: "ultrapilot-deploy-dashboard",
-        name: "Deploy Dashboard to Production",
-        description: "Deploy UltraPilot dashboard to production with zero-downtime",
-        workspace: "ultrapilot",
-        category: "deployment",
-        defaultAgent: "ultra:executor",
-        estimatedDuration: "10 minutes",
-        phase: 2,
-        parameters: [
-          { name: "environment", type: "select", required: true, description: "Deployment environment", options: ["staging", "production"] },
-          { name: "branch", type: "string", required: true, description: "Git branch to deploy", default: "main" }
-        ],
-        file: "ultrapilot/deployment/deploy-dashboard.md"
-      },
-      {
-        id: "trading-execute-strategy",
-        name: "Execute Trading Strategy",
-        description: "Execute a trading strategy with risk management",
-        workspace: "trading-at",
-        category: "trading",
-        defaultAgent: "trading:executor",
-        estimatedDuration: "5 minutes",
-        phase: 2,
-        parameters: [
-          { name: "symbol", type: "string", required: true, description: "Trading symbol" },
-          { name: "strategy", type: "select", required: true, description: "Trading strategy", options: ["momentum", "mean-reversion", "breakout"] },
-          { name: "side", type: "select", required: true, description: "Trade direction", options: ["buy", "sell"] },
-          { name: "quantity", type: "integer", required: true, description: "Number of shares", default: "100" }
-        ],
-        file: "trading-at/trading/execute-trade.md"
-      },
-      {
-        id: "trading-portfolio-health",
-        name: "Portfolio Health Monitor",
-        description: "Monitor portfolio health and risk metrics",
-        workspace: "trading-at",
-        category: "monitoring",
-        defaultAgent: "trading:monitor",
-        estimatedDuration: "3 minutes",
-        phase: 0,
-        parameters: [
-          { name: "alert_threshold", type: "float", required: false, description: "Loss percentage for alerts", default: "5.0" }
-        ],
-        file: "trading-at/monitoring/portfolio-health.md"
-      }
-    ]
-
-    setPlaybooks(mockPlaybooks)
-    setFilteredPlaybooks(mockPlaybooks)
+    fetchPlaybooks()
   }, [])
+
+  const fetchPlaybooks = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      // REAL playbook data from UltraPilot skills
+      const realPlaybooks: Playbook[] = [
+        {
+          id: "ultrapilot",
+          name: "UltraPilot - Strategic Orchestration",
+          description: "Strategic orchestration system: Requirements → Architecture → Planning with Multi-Perspective Review, then hands off to Ultra-Lead for operational execution",
+          category: "Core Workflow",
+          file: "~/.claude/skills/ultrapilot/SKILL.md",
+          githubWorkflow: ".github/workflows/ultrapilot.yml",
+          parameters: ["task (required)", "workspace (optional)", "direct (optional)"],
+          estimatedDuration: "Hours to days"
+        },
+        {
+          id: "ultra-lead",
+          name: "Ultra-Lead - Planning & Execution",
+          description: "Persistent planning orchestrator: Phase 0 (Requirements + Architecture) → Phase 1 (Planning + Review) → Task Decomposition → AutoloopDaemon coordination",
+          category: "Core Workflow",
+          file: "~/.claude/skills/ultra-lead/SKILL.md",
+          githubWorkflow: ".github/workflows/ultra-lead.yml",
+          parameters: ["task (required)", "mode (planning|execution|full)", "workspace (optional)"],
+          estimatedDuration: "Hours"
+        },
+        {
+          id: "ultra-autoloop",
+          name: "Ultra-Autoloop - Continuous Execution",
+          description: "Continuous heartbeat daemon (60s cycle): Processes task queues, coordinates agents via WorkingManager, executes routines. 'The boulder never stops'",
+          category: "Core Workflow",
+          file: "~/.claude/skills/ultra-autoloop/SKILL.md",
+          githubWorkflow: ".github/workflows/ultra-autoloop.yml",
+          parameters: ["action (start|stop|status|heartbeat)", "cycles (optional)", "workspace (optional)"],
+          estimatedDuration: "Continuous"
+        }
+      ]
+
+      setPlaybooks(realPlaybooks)
+      setFilteredPlaybooks(realPlaybooks)
+    } catch (err) {
+      console.error('Error loading playbooks:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load playbooks')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // Filter playbooks
   useEffect(() => {
@@ -155,287 +115,190 @@ export default function PlaybooksPage() {
       )
     }
 
-    if (workspaceFilter !== "all") {
-      filtered = filtered.filter(pb => pb.workspace === workspaceFilter)
-    }
-
-    if (categoryFilter !== "all") {
+    if (categoryFilter !== 'all') {
       filtered = filtered.filter(pb => pb.category === categoryFilter)
     }
 
     setFilteredPlaybooks(filtered)
-  }, [searchQuery, workspaceFilter, categoryFilter, playbooks])
+  }, [playbooks, searchQuery, categoryFilter])
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "development": return <Code className="h-4 w-4" />
-      case "operations": return <Settings className="h-4 w-4" />
-      case "deployment": return <Rocket className="h-4 w-4" />
-      case "monitoring": return <Activity className="h-4 w-4" />
-      case "trading": return <TrendingUp className="h-4 w-4" />
-      default: return <BookOpen className="h-4 w-4" />
-    }
-  }
-
-  const getWorkspaceColor = (workspace: string) => {
-    return workspace === "ultrapilot"
-      ? "bg-blue-500/10 text-blue-600 border-blue-500/20"
-      : "bg-green-500/10 text-green-600 border-green-500/20"
-  }
-
-  const handleExecute = async (playbook: Playbook) => {
+  const handleExecutePlaybook = async (playbook: Playbook) => {
     setIsExecuting(true)
-
     try {
-      // Create GitHub issue for playbook execution
-      const response = await fetch('/api/v1/playbooks/execute', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          playbookId: playbook.id,
-          playbookName: playbook.name,
-          workspace: playbook.workspace,
-          parameters: {} // Would be populated from form
+      // Trigger GitHub workflow
+      if (playbook.githubWorkflow) {
+        const response = await fetch('/api/v1/playbooks/execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            playbookId: playbook.id,
+            playbookName: playbook.name,
+            workflow: playbook.githubWorkflow,
+          })
         })
-      })
 
-      if (response.ok) {
+        if (!response.ok) throw new Error('Failed to execute playbook')
+
         const data = await response.json()
-        // Redirect to workflows page to monitor execution
-        window.location.href = `/dashboard/workflows`
+        window.open(data.workflowUrl, '_blank')
       }
-    } catch (error) {
-      console.error('Error executing playbook:', error)
+    } catch (err) {
+      console.error('Error executing playbook:', err)
     } finally {
       setIsExecuting(false)
     }
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'Core Workflow':
+        return <Zap className="h-5 w-5 text-yellow-600" />
+      default:
+        return <BookOpen className="h-5 w-5" />
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Playbooks</h1>
+          <h1 className="text-3xl font-bold tracking-tight">UltraPilot Workflows</h1>
           <p className="text-muted-foreground mt-1">
-            Browse and execute predefined workflow templates
+            Execute strategic planning and continuous automation workflows
           </p>
         </div>
-        <Badge variant="outline" className="text-sm">
-          {playbooks.length} playbooks available
-        </Badge>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-full mt-2" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-20 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">UltraPilot Workflows</h1>
+        <p className="text-muted-foreground mt-1">
+          Strategic orchestration and continuous automation workflows
+        </p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search playbooks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+      {error && (
+        <Card className="border-red-500">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-sm">{error}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Filters */}
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search workflows..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </div>
-        <Select value={workspaceFilter} onValueChange={setWorkspaceFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Workspace" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Workspaces</SelectItem>
-            <SelectItem value="ultrapilot">UltraPilot (VPS5)</SelectItem>
-            <SelectItem value="trading-at">Trading-at (VPS4)</SelectItem>
-          </SelectContent>
-        </Select>
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-48">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="development">Development</SelectItem>
-            <SelectItem value="operations">Operations</SelectItem>
-            <SelectItem value="deployment">Deployment</SelectItem>
-            <SelectItem value="monitoring">Monitoring</SelectItem>
-            <SelectItem value="trading">Trading</SelectItem>
+            <SelectItem value="Core Workflow">Core Workflows</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Playbooks Grid */}
-      {filteredPlaybooks.length === 0 ? (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-              <p className="text-muted-foreground">No playbooks found</p>
-              <p className="text-sm text-muted-foreground/70 mt-1">
-                Try adjusting your search or filters
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPlaybooks.map((playbook) => (
-            <Card
-              key={playbook.id}
-              className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => setSelectedPlaybook(playbook)}
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    {getCategoryIcon(playbook.category)}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredPlaybooks.map((playbook) => (
+          <Card key={playbook.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  {getCategoryIcon(playbook.category)}
+                  <div className="flex-1">
                     <CardTitle className="text-lg">{playbook.name}</CardTitle>
+                    <CardDescription className="text-xs mt-1">{playbook.category}</CardDescription>
                   </div>
-                  <Badge variant="outline" className={getWorkspaceColor(playbook.workspace)}>
-                    {playbook.workspace}
-                  </Badge>
                 </div>
-                <CardDescription className="mt-2">
-                  {playbook.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      {playbook.estimatedDuration}
-                    </div>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <User className="h-3 w-3" />
-                      {playbook.defaultAgent}
-                    </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">{playbook.description}</p>
+
+              {playbook.parameters && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Settings className="h-4 w-4" />
+                    <span>Parameters</span>
                   </div>
                   <div className="flex flex-wrap gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      {playbook.category}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Phase {playbook.phase}
-                    </Badge>
-                    {playbook.parameters.length > 0 && (
-                      <Badge variant="secondary" className="text-xs">
-                        {playbook.parameters.length} params
+                    {playbook.parameters.map((param, idx) => (
+                      <Badge key={idx} variant="secondary" className="text-xs">
+                        {param}
                       </Badge>
-                    )}
+                    ))}
                   </div>
-                  <Button
-                    className="w-full"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleExecute(playbook)
-                    }}
-                    disabled={isExecuting}
-                  >
-                    <Play className="h-3 w-3 mr-1" />
-                    Execute
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              )}
 
-      {/* Playbook Detail Modal */}
-      {selectedPlaybook && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedPlaybook(null)}
-        >
-          <div
-            className="bg-background rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h2 className="text-2xl font-bold">{selectedPlaybook.name}</h2>
-                  <p className="text-muted-foreground mt-1">{selectedPlaybook.description}</p>
+              {playbook.estimatedDuration && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span>{playbook.estimatedDuration}</span>
                 </div>
-                <Badge variant="outline" className={getWorkspaceColor(selectedPlaybook.workspace)}>
-                  {selectedPlaybook.workspace}
-                </Badge>
+              )}
+
+              <div className="flex gap-2 pt-2">
+                <Button
+                  onClick={() => handleExecutePlaybook(playbook)}
+                  disabled={isExecuting}
+                  className="flex-1"
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  {isExecuting ? 'Executing...' : 'Execute'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => window.open(`https://github.com/hscheema1979/hscheema1979/blob/main/${playbook.githubWorkflow}`, '_blank')}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </Button>
               </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Category</p>
-                    <p className="font-medium capitalize">{selectedPlaybook.category}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Default Agent</p>
-                    <p className="font-medium">{selectedPlaybook.defaultAgent}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Duration</p>
-                    <p className="font-medium">{selectedPlaybook.estimatedDuration}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Phase</p>
-                    <p className="font-medium">{selectedPlaybook.phase}</p>
-                  </div>
-                </div>
-
-                {selectedPlaybook.parameters.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Parameters</h3>
-                    <div className="space-y-2">
-                      {selectedPlaybook.parameters.map((param) => (
-                        <div key={param.name} className="border rounded-lg p-3">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-medium">{param.name}</p>
-                              <p className="text-sm text-muted-foreground">{param.description}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {param.type}
-                              </Badge>
-                              {param.required && (
-                                <Badge variant="destructive" className="text-xs">
-                                  Required
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                          {param.options && (
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {param.options.map((option) => (
-                                <Badge key={option} variant="secondary" className="text-xs">
-                                  {option}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex gap-2">
-                  <Button
-                    className="flex-1"
-                    onClick={() => handleExecute(selectedPlaybook)}
-                    disabled={isExecuting}
-                  >
-                    <Play className="h-4 w-4 mr-2" />
-                    Execute Playbook
-                  </Button>
-                  <Button variant="outline" onClick={() => setSelectedPlaybook(null)}>
-                    Close
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {filteredPlaybooks.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+            <p className="text-muted-foreground">No workflows found matching your search</p>
+          </CardContent>
+        </Card>
       )}
     </div>
   )

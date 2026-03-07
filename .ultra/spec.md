@@ -1,854 +1,772 @@
-# GitHub Mission Control Dashboard - Workflow Automation System
+# Platform-Agnostic Control Center Dashboard - Specification
 
-**Project:** Workflow Automation System
-**Date:** 2025-03-06
-**Status:** Phase 0 Complete
+**Project:** UltraPilot Dashboard Architecture Redesign
+**Date:** 2026-03-06
 **Version:** 1.0
+**Status:** Phase 0 Complete
 
 ---
 
 ## Executive Summary
 
-A comprehensive workflow automation system that enables users to submit feature requests through the GitHub Mission Control Dashboard and automatically trigger AI agents (ultra:architect, ultra:team-lead) to resolve them with proper orchestration, phase management, and user control points.
-
-**Three Supported Workflows:**
-1. **Quick Feature Request** - Simple, single-agent execution with minimal friction
-2. **Full Ultrapilot Project** - Complete 5-phase development lifecycle with approval gates
-3. **Ultra-Lead Task Queue** - Multi-project task management and prioritization
-
-**Inspired By:** Monday.com, Jira Automation, Asana Project Templates, Linear Issue Management
+This specification defines the requirements and architecture for transforming the current UltraPilot Dashboard (development-focused) into a **holistic, platform-agnostic control center** capable of managing operations across Development, Trading, and Healthcare platforms while supporting large collaborative teams with enterprise-grade compliance, scalability, and security.
 
 ---
 
-## 1. Requirements
+## Part 1: Requirements Extraction
 
-### 1.1 Functional Requirements
+### 1.1 Multi-Platform Architecture
 
-**FR-1: Feature Request Submission**
-- User interface for submitting feature requests (form-based and chat-based)
-- Automatic intent detection (feature-request, bug-report, question, review)
-- GitHub issue auto-creation with templates and labels
-- File/screenshot attachment support
-- Draft auto-save
+**FR-1.1 Platform Abstraction Layer**
+- The dashboard SHALL provide a platform abstraction layer that normalizes data and operations across different platform types
+- Platform types MUST be dynamically discoverable and extensible without core dashboard modifications
+- Each platform SHALL define its own:
+  - Data schema adapters
+  - Metric definitions
+  - Compliance requirements
+  - Integration endpoints
+  - UI components
 
-**FR-2: Agent Orchestration**
-- Automatic agent assignment based on intent:
-  - ultra:analyst (requirements)
-  - ultra:architect (design)
-  - ultra:planner (planning)
-  - ultra:team-lead (coordination)
-  - ultra:executor (implementation)
-  - ultra:verifier (testing)
-  - ultra:reviewer (review)
-- Multi-phase workflow support (10 phases)
-- Parallel execution for independent tasks
-- File ownership management to prevent conflicts
+**FR-1.2 Platform Type Support**
+- **Development Platform**: Code repositories, CI/CD workflows, pull requests, deployment pipelines
+- **Trading Platform**: Real-time market data, execution systems, risk management, compliance (FINRA/SOX)
+- **Healthcare Platform**: Patient data systems, HIPAA-compliant workflows, regulated access, audit trails
 
-**FR-3: User Control Points**
-- Approval gates at key decision points:
-  - Post-requirements (confirm understanding)
-  - Post-architecture (approve approach)
-  - Post-planning (confirm tasks)
-  - Pre-deployment (approve release)
-- Real-time progress monitoring
-- Pause/resume/intervention capabilities
-- Cancellation with cleanup
+**FR-1.3 Platform Registration**
+- New platforms SHALL be registerable via configuration (not code changes)
+- Platform configuration MUST include:
+  - API endpoint definitions
+  - Authentication schemes
+  - Data retention policies
+  - Compliance requirements
+  - Custom metrics and alerts
 
-**FR-4: Task Queue Management**
-- Prioritized task queue
-- Bulk task submission
-- Task dependency support
-- Manual reordering and reassignment
-- Multi-project coordination
+### 1.2 Large Team Coordination
 
-**FR-5: Progress Visibility**
-- Real-time dashboard with active workflows
-- Phase progress tracking
-- Agent utilization metrics
-- Artifact access (specs, plans, code)
-- Audit trail
+**FR-2.1 Multi-Organization Support**
+- The dashboard SHALL support multiple organizations (orgs) simultaneously
+- Users SHALL be able to switch between orgs without re-authentication
+- Cross-org views SHALL be available for authorized administrators
+- Each org SHALL have isolated: Workflows, Agents, Playbooks, Metrics
 
-### 1.2 User Requirements
+**FR-2.2 Team Hierarchy Management**
+- Organization → Team → Subteam → Individual hierarchy
+- Role-based access inherited from hierarchy
+- Resource permissions follow team boundaries
 
-**UR-1: Quick Feature Request** (< 30 min)
-- Submit in under 2 minutes
-- Automatic agent execution
-- Progress without approvals
-- Notification on completion
+**FR-2.3 Collaboration Features**
+- Real-time activity feed across all teams
+- @mentions and notifications
+- Shared workspace for concurrent users
+- Conflict resolution for simultaneous edits
+- Activity attribution (who did what when)
 
-**UR-2: Full Ultrapilot** (Hours to days)
-- Requirements clarification (interactive)
-- Architecture approval
-- Implementation plan approval
-- Test results review
-- Final deployment approval
+**FR-2.4 Workload Distribution**
+- Queue-based workflow distribution across teams
+- Auto-assignment based on team capacity, skill matching, workload balancing, priority queues
+- Manual override capabilities for team leads
 
-**UR-3: Task Queue** (Parallel execution)
-- Submit multiple related tasks
-- See prioritization recommendations
-- Monitor parallel execution
-- Reassign tasks between agents
+### 1.3 Real-Time Orchestration
 
-### 1.3 Technical Requirements
+**FR-3.1 UltraPilot 5-Phase Workflow Monitoring**
+- Phase 0 (Requirements): Requirements extraction, stakeholder analysis
+- Phase 1 (Planning): Architecture design, implementation planning, validation
+- Phase 2 (Execution): Parallel development with file ownership, agent coordination
+- Phase 3 (QA): Automated testing cycles (build, test, fix, repeat)
+- Phase 4 (Validation): Multi-perspective review (security, quality, performance)
+- Phase 5 (Verification): Evidence-backed verification, cleanup
 
-**TR-1: Tech Stack**
-- Frontend: Next.js 15, TypeScript, shadcn/ui, Tailwind CSS
-- Backend: Node.js, GitHub App (webhooks, GraphQL)
-- Real-time: WebSockets or Server-Sent Events
-- Storage: JSON files in `.ultra/state/` (Git-tracked)
+**FR-3.2 Phase Transition Management**
+- Automated phase progression based on completion criteria
+- Manual phase transition override for administrators
+- Phase rollback capabilities
+- Phase-specific agent assignment
+- Inter-phase dependency tracking
 
-**TR-2: Agent Integration**
-- UltraPilot plugin integration
-- Claude Code CLI agent invocation
-- Agent lifecycle management (spawn, monitor, terminate)
-- File-based communication
+**FR-3.3 Real-Time Status Dashboard**
+- Live HUD showing: Current phase, Active agents and activities, QA cycle status, Context usage, Task completion counts, Agent health status
+- Sub-second updates for critical events
+- Configurable refresh rates for different data types
 
-**TR-3: GitHub Integration**
-- GitHub App authentication (not PAT)
-- Issue creation with templates
-- Label/state management via labels
-- Comment-based activity logging
-- Pull request automation
+**FR-3.4 Workflow Control**
+- Start/pause/resume/stop workflows
+- Cancel runaway workflows
+- Emergency stop all workflows
+- Workflow prioritization
+- Workflow dependency management
 
-**TR-4: State Management**
-- Atomic state updates in JSON
-- Version history and rollback
-- Checkpoint system for recovery
-- Compression for old states
+### 1.4 Multi-Repository Management
+
+**FR-4.1 Repository Discovery**
+- Automatic discovery of repositories across platforms
+- Support for GitHub/GitLab/Bitbucket (Development) and proprietary VCS (Trading/Healthcare)
+- Repository health scoring
+- Activity-based ranking
+
+**FR-4.2 Repository Organization**
+- Group repositories by: Organization, Team, Platform type, Custom tags
+- Saved repository views/filters
+- Bulk operations across repositories
+
+**FR-4.3 Cross-Repository Workflows**
+- Workflows spanning multiple repositories
+- Atomic operations across repos
+- Rollback capabilities
+- Consistency checks
+
+### 1.5 Compliance & Audit
+
+**FR-5.1 Healthcare (HIPAA) Requirements**
+- PHI (Protected Health Information) access logging
+- Role-based data access (minimum necessary)
+- Audit trail for all PHI access
+- Data encryption at rest and in transit
+- BAA (Business Associate Agreement) tracking
+- Patient data de-identification in views
+- Consent management integration
+
+**FR-5.2 Trading (FINRA/SOX) Requirements**
+- Trade execution audit trail (immutable)
+- Communications recording and retention
+- Risk limit enforcement
+- Pre-trade compliance checks
+- Surveillance and monitoring alerts
+- Electronic record tamper detection
+- Supervisory review workflows
+- Exception reporting
+
+**FR-5.3 Development (SOC2/ISO27001) Requirements**
+- Change management tracking
+- Deployment approval workflows
+- Vulnerability scanning integration
+- Security review processes
+- Access review certifications
+- Penetration test coordination
+
+**FR-5.4 Unified Audit Framework**
+- Platform-agnostic audit event format
+- Immutable audit log (write-once)
+- Audit log retention policies per platform
+- Audit search and filtering
+- Audit export capabilities
+- Compliance reporting templates
+
+### 1.6 Non-Functional Requirements
+
+**NFR-1 Performance**
+- Dashboard page load: <2 seconds (p95)
+- API response time: <100ms (p95) for cached data
+- Real-time updates: <500ms latency
+- Search queries: <1 second
+
+**NFR-2 Scalability**
+- Support 100+ concurrent workflows
+- Support 1000+ concurrent agents
+- Support 10,000+ repository connections
+- Horizontal scaling capability
+
+**NFR-3 Security**
+- Multi-factor authentication (MFA)
+- Role-Based Access Control (RBAC)
+- Encryption at rest (AES-256) and in transit (TLS 1.3)
+- HIPAA, FINRA/SOX, SOC2 compliance
+
+**NFR-4 Reliability**
+- 99.9% uptime target (8.76 hours downtime/year)
+- No single point of failure
+- Disaster recovery
+- Backup and restore
+
+### 1.7 User Roles
+
+| Role | Permissions |
+|------|-------------|
+| System Administrator | All permissions, platform configuration, user management |
+| Platform Administrator | Platform-specific config, team management, workflow approval |
+| Team Lead | Team member management, workflow assignment, performance monitoring |
+| Developer/Trader/Clinician | Execute assigned workflows, view own tasks, update status |
+| Auditor/Compliance Officer | Read-only audit logs, compliance reports, investigation |
+| Viewer | View dashboards, view status, no execution permissions |
 
 ---
 
-## 2. Architecture
+## Part 2: System Architecture
 
-### 2.1 System Architecture
+### 2.1 High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    GITHUB MISSION CONTROL                      │
-│                      NEXT.JS DASHBOARD                          │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      FRONTEND LAYER                             │
-├─────────────────────────────────────────────────────────────────┤
-│  WorkflowRouter  │  ProgressMonitor  │  ControlPanel  │  QueueUI │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-┌──────────────────────┐      ┌──────────────────────┐
-│  WebSocket Gateway  │      │   REST API Layer     │
-│  (Real-time Updates)  │      │ (Submission/Control) │
-└──────────────────────┘      └──────────────────────┘
-              │                           │
-              └─────────────┬─────────────┘
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    BACKEND SERVICES                            │
-├─────────────────────────────────────────────────────────────────┤
-│  WorkflowEngine  │  AgentOrchestrator  │  GitHubIntegrator  │
-└─────────────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      AGENT LAYER                                │
-├─────────────────────────────────────────────────────────────────┤
-│  ultra:architect  │  ultra:team-lead  │  UltraPilot Skills    │
-└─────────────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    GITHUB APP BACKEND                          │
-│  (Issues = State, Comments = Activity, PRs = Deliverables)    │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                        CONTROL CENTER DASHBOARD                                     │
+│                       (Platform-Agnostic Layer)                                    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                        │
+                    ┌───────────────────┴───────────────────┐
+                    │                                       │
+            ┌───────▼────────┐                    ┌────────▼────────┐
+            │  Web Browser   │                    │  Mobile Client  │
+            │  (Next.js App) │                    │  (React Native) │
+            └───────┬────────┘                    └────────┬────────┘
+                    │                                       │
+                    └───────────────────┬───────────────────┘
+                                        │
+┌───────────────────────────────────────▼───────────────────────────────────────────┐
+│                        API GATEWAY LAYER                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │   REST API   │  │   GraphQL    │  │  WebSocket   │  │   Webhooks   │         │
+│  │  /api/v2/*   │  │   /graphql   │  │  /realtime   │  │  /webhooks   │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+└─────────┼──────────────────┼──────────────────┼──────────────────┼────────────────┘
+          │                  │                  │                  │
+┌─────────┼──────────────────┼──────────────────┼──────────────────┼────────────────┐
+│         │      AUTH &      │      RATE        │      REAL-TIME    │      EVENT      │
+│         │      AUTHZ       │      LIMIT       │      UPDATES     │      PROCESSING  │
+│         └──────────────────┴──────────────────┴──────────────────┴────────────────┘
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                        │
+┌───────────────────────────────────────▼───────────────────────────────────────────┐
+│                        SERVICE LAYER                                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │   Workflow   │  │   Platform   │  │    Agent     │  │    Audit     │         │
+│  │   Service    │  │   Service    │  │   Service    │  │   Service    │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+└─────────┼──────────────────┼──────────────────┼──────────────────┼────────────────┘
+          │                  │                  │                  │
+┌─────────┼──────────────────┼──────────────────┼──────────────────┼────────────────┐
+│         │      CACHE       │    STATE STORE    │    MESSAGE BUS   │    AUDIT LOG   │
+│         │    (Redis)       │    (SQLite)       │   (RabbitMQ)     │  (Immutable)   │
+│         └──────────────────┴──────────────────┴──────────────────┴────────────────┘
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                        │
+┌───────────────────────────────────────▼───────────────────────────────────────────┐
+│                    INTEGRATION LAYER (Platform Adapters)                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │ Development  │  │    Trading   │  │  Healthcare  │  │   Custom     │         │
+│  │   Adapter    │  │   Adapter    │  │   Adapter    │  │   Adapter    │         │
+│  │ (GitHub/Git) │  │ (TradingAPI) │  │   (FHIR)     │  │  (Plugin)    │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+└─────────┼──────────────────┼──────────────────┼──────────────────┼────────────────┘
+          │                  │                  │                  │
+┌─────────┼──────────────────┼──────────────────┼──────────────────┼────────────────┐
+│         │     GitHub       │  Trading System  │  EHR/PHI System  │  Custom Sys.   │
+│         │  API / Actions   │   Execution      │     (HIPAA)      │                │
+│         └──────────────────┴──────────────────┴──────────────────┴────────────────┘
+└─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2 Frontend Components
+### 2.2 Component Architecture
 
-**Workflow Submission Component:**
+#### 2.2.1 Dashboard UI Layer (Next.js)
+
+**Page Structure:**
+```
+/dashboard
+├── /control          # Workflow submission and monitoring (ACTIVE)
+├── /workflows        # All workflows queue and status
+├── /agents           # Agent status and performance metrics
+├── /platforms        # Multi-platform overview and switching
+├── /repos            # Repository management and health
+├── /traces           # Unified audit trail
+├── /compliance       # Compliance reports and alerts
+├── /team             # Team collaboration and workload
+├── /settings         # User and system configuration
+└── /admin            # System administration
+```
+
+**Shared Components:**
+- `PlatformSwitcher` - Platform context switcher
+- `RealTimeStatus` - Live HUD with phase/agent/QA status
+- `WorkflowCard` - Standardized workflow display across pages
+- `AgentStatus` - Agent health and activity monitoring
+- `ComplianceBadge` - Compliance status indicator
+- `AuditTrail` - Unified audit log viewer
+
+#### 2.2.2 API Gateway Layer
+
+**REST API Endpoints:**
+```
+/api/v2/
+├── /workflows/
+│   ├── POST   /execute          # Submit new workflow
+│   ├── GET    /                 # List all workflows
+│   ├── GET    /:id              # Get workflow details
+│   ├── PUT    /:id/cancel       # Cancel workflow
+│   ├── PUT    /:id/pause        # Pause workflow
+│   ├── PUT    /:id/resume       # Resume workflow
+│   └── GET    /:id/trace        # Get workflow trace
+├── /platforms/
+│   ├── GET    /                 # List available platforms
+│   ├── GET    /:id              # Get platform config
+│   ├── POST   /:id/register     # Register new platform
+│   └── PUT    /:id/config       # Update platform config
+├── /agents/
+│   ├── GET    /                 # List all agents
+│   ├── GET    /:id/status       # Get agent status
+│   ├── GET    /:id/performance  # Get agent metrics
+│   └── POST   /:id/assign       # Assign task to agent
+├── /repos/
+│   ├── GET    /                 # List repositories
+│   ├── GET    /:id              # Get repo details
+│   ├── GET    /:id/health       # Get repo health score
+│   └── POST   /:id/sync         # Sync repository
+├── /audit/
+│   ├── GET    /                 # Query audit log
+│   ├── GET    /:id              # Get audit entry
+│   └── GET    /compliance       # Get compliance report
+├── /teams/
+│   ├── GET    /                 # List teams
+│   ├── GET    /:id              # Get team details
+│   ├── PUT    /:id/assign       # Assign workflow to team
+│   └── GET    /:id/workload     # Get team workload
+└── /realtime/
+    ├── GET    /stream           # WebSocket endpoint
+    └── POST   /subscribe        # Subscribe to events
+```
+
+#### 2.2.3 Service Layer Architecture
+
+**Core Services:**
+
+1. **Workflow Service**
+   - Workflow lifecycle management
+   - Phase transition orchestration
+   - Agent assignment coordination
+   - QA cycle management
+   - State persistence
+
+2. **Platform Service**
+   - Platform registry management
+   - Platform adapter coordination
+   - Cross-platform data normalization
+   - Platform-specific compliance enforcement
+
+3. **Agent Service**
+   - Agent lifecycle management
+   - Agent health monitoring
+   - Task assignment and load balancing
+   - Agent communication broker
+
+4. **Audit Service**
+   - Immutable audit log
+   - Compliance report generation
+   - Event correlation
+   - Retention policy enforcement
+
+#### 2.2.4 Platform Abstraction Layer
+
+**Platform Adapter Interface:**
 ```typescript
-// src/components/workflows/submit-form.tsx
-<WorkflowSubmitForm>
-  - Title input
-  - Description textarea (rich text)
-  - Type selector (Feature/Bug/Review)
-  - Priority selector (Low/Medium/High/Critical)
-  - Project selector
-  - Workflow type: Quick | Full Ultrapilot | Queue
-  - Attachments (files, screenshots)
-  - Intent detection preview
-  - Submit button
-</WorkflowSubmitForm>
-```
-
-**Workflow Selection Component:**
-```typescript
-// src/components/workflows/workflow-selector.tsx
-<WorkflowSelector>
-  Radio buttons:
-  ◉ Quick Request (Simple, fast, single agent)
-  ○ Full Ultrapilot (Complete lifecycle, approvals)
-  ○ Add to Queue (Multi-task coordination)
-</WorkflowSelector>
-```
-
-**Progress Visualization Component:**
-```typescript
-// src/components/workflows/progress-tracker.tsx
-<WorkflowProgress>
-  PhasePipeline:
-    ✓ Initiation → ✓ Requirements → ✓ Architecture
-    → ⚡ Execution (68%) → ○ Verification → ...
-
-  CurrentActivity:
-    Agent: ultra:executor-high
-    Activity: "Implementing OAuth callback"
-    File: src/auth/oauth/callback.ts
-    Time: 1h 45min
-
-  ControlHooks:
-    [Pause] [Intervene] [Approve] [Reject]
-</WorkflowProgress>
-```
-
-**Task Queue Component:**
-```typescript
-// src/components/workflows/task-queue.tsx
-<TaskQueue>
-  QueueList:
-    1. ⚡ Add user profile [high] ultra:team-lead
-    2. ⚡ Implement search [medium] ultra:team-lead
-    3. ⚡ Refactor DB [low] ultra:team-lead
-
-  Controls:
-    [Reorder] [Reassign] [Pause] [Cancel]
-</TaskQueue>
-```
-
-### 2.3 Backend Architecture
-
-**API Endpoints:**
-```typescript
-// Workflow Management
-POST   /api/workflows                    // Create workflow
-GET    /api/workflows/:id                // Get workflow details
-PUT    /api/workflows/:id/advance        // Advance phase
-POST   /api/workflows/:id/pause          // Pause workflow
-POST   /api/workflows/:id/approve        // Approve gate
-POST   /api/workflows/:id/intervene      // User intervention
-
-// Task Queue
-POST   /api/tasks                        // Create task
-GET    /api/tasks                        // List tasks
-POST   /api/tasks/:id/reassign           // Reassign agent
-PUT    /api/tasks/:id/priority           // Update priority
-
-// Real-time
-GET    /api/workflows/stream             // SSE stream for updates
-```
-
-**Workflow Engine:**
-```typescript
-// src/lib/workflow-engine.ts
-class WorkflowEngine {
-  async createWorkflow(data) {
-    // 1. Detect intent
-    const intent = await detectIntent(data)
-
-    // 2. Create GitHub issue
-    const issue = await createGitHubIssue(data, intent)
-
-    // 3. Initialize workflow state
-    const workflow = {
-      id: generateId(),
-      type: data.workflowType,
-      intent,
-      githubIssue: issue.number,
-      currentPhase: 'initiation',
-      status: 'pending',
-      createdAt: new Date()
-    }
-
-    // 4. Save state
-    await saveWorkflowState(workflow)
-
-    // 5. Trigger agent based on type
-    if (workflow.type === 'quick') {
-      await this.triggerQuickWorkflow(workflow)
-    } else if (workflow.type === 'full') {
-      await this.triggerUltrapilotWorkflow(workflow)
-    } else if (workflow.type === 'queue') {
-      await this.addToQueue(workflow)
-    }
-
-    return workflow
-  }
-}
-```
-
-**Agent Orchestrator:**
-```typescript
-// src/lib/agent-orchestrator.ts
-class AgentOrchestrator {
-  async triggerQuickWorkflow(workflow: Workflow) {
-    // Single agent execution
-    const agent = workflow.intent.suggestedAgent
-
-    // Spawn agent
-    await spawnAgent(agent, {
-      taskId: workflow.id,
-      type: 'quick-request',
-      title: workflow.title,
-      description: workflow.description
-    })
-
-    // Monitor progress
-    await this.monitorAgentProgress(workflow.id, agent)
-  }
-
-  async triggerUltrapilotWorkflow(workflow: Workflow) {
-    // Use UltraPilot skill integration
-    const skillIntegration = new UltraPilotSkillIntegration({
-      workspacePath: process.cwd(),
-      ultraPath: '.ultra'
-    })
-
-    // Hand off to UltraPilot
-    await skillIntegration.phase1Complete('.ultra/plan.md')
-
-    // Listen for progress
-    skillIntegration.on('progress', (progress) => {
-      this.updateWorkflowProgress(workflow.id, progress)
-    })
-
-    skillIntegration.on('completed', (result) => {
-      this.completeWorkflow(workflow.id, result)
-    })
-  }
-}
-```
-
-**GitHub Integration:**
-```typescript
-// src/lib/github-integrator.ts
-class GitHubIntegrator {
-  async createIssue(workflow: Workflow) {
-    const template = this.getIssueTemplate(workflow.type)
-    const labels = [
-      `type:${workflow.intent.type}`,
-      `priority:${workflow.intent.priority}`,
-      `status:pending`,
-      `agent:${workflow.intent.suggestedAgent}`
-    ]
-
-    const issue = await github.rest.issues.create({
-      owner: 'hscheema1979',
-      repo: workflow.projectId,
-      title: `[${workflow.intent.type}] ${workflow.title}`,
-      body: template.body,
-      labels
-    })
-
-    return issue
-  }
-
-  async postStatusUpdate(workflowId: string, phase: string, status: string) {
-    await github.rest.issues.createComment({
-      owner: 'hscheema1979',
-      repo: getRepo(workflowId),
-      issue_number: getIssueNumber(workflowId),
-      body: `**[${phase}]** ${status}`
-    })
-  }
-}
-```
-
-### 2.4 Data Flow
-
-**Quick Request Flow:**
-```
-User submits form
-    ↓
-Intent detection (ultra:analyst logic)
-    ↓
-GitHub issue created with labels
-    ↓
-ultra:architect spawned
-    ↓
-Agent posts progress to GitHub comments
-    ↓
-Dashboard shows real-time updates via WebSocket
-    ↓
-Agent completes, closes issue
-    ↓
-User notified
-```
-
-**Full Ultrapilot Flow:**
-```
-User submits detailed request
-    ↓
-Workflow created with type='full'
-    ↓
-UltraPilot skill triggered
-    ↓
-Phase 0: Requirements (ultra:analyst)
-  ├─ User approval gate
-  └─ Approved → spec.md created
-    ↓
-Phase 1: Architecture (ultra:architect)
-  ├─ User approval gate
-  └─ Approved → Architecture designed
-    ↓
-Phase 2: Planning (ultra:planner)
-  ├─ User approval gate
-  └─ Approved → plan.md created
-    ↓
-Hand off to Ultra-Lead (Phases 3-6)
-  ├─ Execution (ultra:team-lead + executors)
-  ├─ Verification (ultra:verifier)
-  ├─ Review (reviewers)
-  └─ Deployment approval
-    ↓
-Complete → Notification
-```
-
-**Task Queue Flow:**
-```
-User submits multiple tasks
-    ↓
-Tasks added to queue
-    ↓
-ultra:team-lead analyzes dependencies
-    ↓
-Priority order recommended
-    ↓
-User adjusts order
-    ↓
-Ultra-Lead spawns agents for parallel execution
-    ↓
-Progress monitored in dashboard
-    ↓
-User can reassign/pause/reorder
-    ↓
-All complete → Summary
-```
-
-### 2.5 User Control Hooks (Approval Gates)
-
-```typescript
-// src/lib/approval-gates.ts
-class ApprovalGates {
-  async checkApprovalGate(workflowId: string, phase: string) {
-    const workflow = await getWorkflow(workflowId)
-
-    // Check if this phase requires approval
-    if (this.requiresApproval(phase)) {
-      // Pause workflow
-      await this.pauseWorkflow(workflowId)
-
-      // Update GitHub issue
-      await this.postApprovalRequest(workflowId, phase)
-
-      // Wait for user action
-      const approved = await this.waitForUserApproval(workflowId)
-
-      if (!approved) {
-        // Rejected - return to previous phase for revision
-        await this.returnToPreviousPhase(workflowId, phase)
-        return false
-      }
-    }
-
-    // Approved - advance to next phase
-    await this.advancePhase(workflowId, phase)
-    return true
-  }
-}
-```
-
-### 2.6 Real-time Updates
-
-**WebSocket Gateway:**
-```typescript
-// src/lib/websocket-gateway.ts
-class WebSocketGateway {
-  broadcastWorkflowUpdate(workflowId: string, update: any) {
-    const message = JSON.stringify({
-      type: 'workflow:update',
-      workflowId,
-      update
-    })
-
-    // Send to all connected clients
-    this.clients.forEach(client => {
-      client.send(message)
-    })
-  }
-
-  // Agent calls this to report progress
-  async reportProgress(agent: string, workflowId: string, progress: any) {
-    // Update state
-    await this.updateWorkflowState(workflowId, progress)
-
-    // Broadcast to dashboard
-    this.broadcastWorkflowUpdate(workflowId, {
-      agent,
-      progress,
-      timestamp: new Date()
-    })
-  }
-}
-```
-
----
-
-## 3. Data Model
-
-### 3.1 Workflow Entity
-
-```typescript
-interface Workflow {
-  id: string                          // Unique ID
-  type: 'quick' | 'full' | 'queue'
-  projectId: string
-  githubIssue?: number
-
-  title: string
-  description: string
-  intent: IntentAnalysis
-
-  currentPhase: Phase
-  phaseHistory: PhaseTransition[]
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed'
-  progress: number                    // 0-100
-
-  primaryAgent?: string
-  requiresApproval: boolean
-  approvedAt?: string
-
-  artifacts: Artifact[]
-  specPath?: string
-  planPath?: string
-
-  result?: 'success' | 'partial' | 'failed'
-  error?: string
-  completedAt?: string
-  duration?: number
-
-  createdAt: string
-  updatedAt: string
-}
-```
-
-### 3.2 Task Entity
-
-```typescript
-interface Task {
+interface PlatformAdapter {
   id: string
-  workflowId?: string
-  projectId: string
-  githubIssue?: number
-  createdAt: string
+  name: string
+  type: 'development' | 'trading' | 'healthcare' | 'custom'
 
-  type: TaskType
-  title: string
-  description: string
-  priority: 'low' | 'medium' | 'high' | 'critical'
+  // Authentication
+  authenticate(credentials: any): Promise<AuthContext>
 
-  assignedTo: string                  // Agent
-  status: 'pending' | 'in-progress' | 'completed' | 'failed' | 'blocked'
-  progress: number
+  // Data fetching
+  fetchWorkflows(filters: FilterOptions): Promise<Workflow[]>
+  fetchAgents(filters: FilterOptions): Promise<Agent[]>
+  fetchRepos(filters: FilterOptions): Promise<Repository[]>
+  fetchAuditEvents(filters: FilterOptions): Promise<AuditEvent[]>
 
-  dependsOn: string[]
-  blocks: string[]
+  // Operations
+  submitWorkflow(workflow: WorkflowRequest): Promise<Workflow>
+  cancelWorkflow(id: string): Promise<void>
+  assignAgent(taskId: string, agentId: string): Promise<void>
 
-  startedAt?: string
-  completedAt?: string
-  duration?: number
+  // Compliance
+  getComplianceReport(range: DateRange): Promise<ComplianceReport>
+  verifyCompliance(event: AuditEvent): Promise<boolean>
 
-  result?: TaskResult
-  error?: string
-  filesModified: string[]
-  commits: string[]
-
-  verified: boolean
-  testsPassed?: boolean
+  // Real-time
+  subscribeToEvents(handler: EventHandler): UnsubscribeFunction
+  getWebhookConfig(): WebhookConfig
 }
 ```
 
-### 3.3 State Storage
+**Platform Registry:**
+```typescript
+interface PlatformRegistry {
+  register(adapter: PlatformAdapter): void
+  unregister(id: string): void
+  get(id: string): PlatformAdapter
+  list(): PlatformAdapter[]
+  getByType(type: PlatformType): PlatformAdapter[]
+}
+```
 
-**File Structure:**
+### 2.3 Data Models
+
+#### 2.3.1 Core Data Structures
+
+```typescript
+// Workflow
+interface Workflow {
+  id: string
+  platform: PlatformType
+  type: WorkflowType
+  phase: WorkflowPhase  // 0-5
+  status: WorkflowStatus  // pending, active, completed, blocked, failed
+  priority: Priority  // low, medium, high, critical
+  agents: string[]  // Agent IDs
+  repository?: string
+  createdAt: Date
+  updatedAt: Date
+  completedAt?: Date
+  trace: WorkflowTrace
+  compliance: ComplianceStatus
+}
+
+// Agent
+interface Agent {
+  id: string  // e.g., "ultra:analyst"
+  name: string
+  category: AgentCategory
+  model: ModelTier
+  status: AgentStatus  // idle, busy, error, offline
+  currentTask?: string
+  performance: AgentPerformance
+  health: AgentHealth
+}
+
+// Platform
+interface Platform {
+  id: string
+  name: string
+  type: PlatformType
+  config: PlatformConfig
+  compliance: ComplianceRequirements
+  integrations: Integration[]
+  health: PlatformHealth
+}
+
+// Repository
+interface Repository {
+  id: string
+  platform: PlatformType
+  owner: string
+  name: string
+  url: string
+  health: RepoHealth
+  activity: ActivityMetrics
+  languages: string[]
+  topics: string[]
+}
+
+// Audit Event
+interface AuditEvent {
+  id: string
+  timestamp: Date
+  platform: PlatformType
+  eventType: AuditEventType
+  actor: string
+  action: string
+  resource: string
+  outcome: 'success' | 'failure'
+  details: any
+  complianceTag?: string
+}
 ```
-.ultra/
-├── workflows/
-│   ├── active/
-│   │   ├── WF-001.json
-│   │   ├── WF-002.json
-│   │   └── ...
-│   ├── completed/
-│   │   ├── WF-100.json
-│   │   └── ...
-│   └── state-index.json
-├── queue/
-│   └── tasks.json
-└── artifacts/
-    ├── specs/
-    ├── plans/
-    └── code/
+
+### 2.4 Real-Time Data Flow
+
+#### 2.4.1 WebSocket Architecture
+
 ```
+Dashboard UI                    API Gateway                  Service Layer
+     │                              │                             │
+     │  1. Connect                  │                             │
+     ├────────────────────────────►│                             │
+     │                              │  2. Authenticate             │
+     │                              ├────────────────────────────►│
+     │                              │                             │
+     │  3. Connection Ready          │                             │
+     │◄────────────────────────────┤                             │
+     │                              │                             │
+     │                              │  4. Subscribe to events     │
+     │                              ├────────────────────────────►│
+     │                              │                             │
+                              Events Flow:
+                              GitHub Webhook → API Gateway → Message Bus → Service → WebSocket → UI
+                              Agent Activity → Agent Bus → Service → WebSocket → UI
+                              Ultra-Lead Progress → Orchestration Service → WebSocket → UI
+```
+
+#### 2.4.2 Event Types
+
+```typescript
+type RealTimeEvent =
+  | { type: 'workflow.started', workflowId: string, phase: number }
+  | { type: 'workflow.phase_complete', workflowId: string, phase: number, nextPhase: number }
+  | { type: 'agent.assigned', workflowId: string, agentId: string, task: string }
+  | { type: 'agent.activity', agentId: string, activity: string, progress: number }
+  | { type: 'qa.cycle_complete', workflowId: string, cycle: number, passed: boolean }
+  | { type: 'compliance.alert', platform: PlatformType, severity: 'high' | 'medium' | 'low', message: string }
+  | { type: 'audit.log_entry', entry: AuditEvent }
+```
+
+### 2.5 Security Architecture
+
+#### 2.5.1 Authentication & Authorization
+
+```
+┌──────────────┐
+│   User       │
+└──────┬───────┘
+       │  1. Login
+       ▼
+┌──────────────┐
+│  Auth Provider│ (SSO/SAML/OAuth2/MFA)
+│  (Okta/AzureAD)│
+└──────┬───────┘
+       │  2. JWT Token
+       ▼
+┌──────────────┐
+│   API        │
+│  Gateway     │ (Validates JWT, extracts claims)
+└──────┬───────┘
+       │  3. User Context (userId, roles, orgs)
+       ▼
+┌──────────────┐
+│  Policy      │ (Evaluates access policies)
+│  Engine      │ (RBAC + ABAC)
+└──────┬───────┘
+       │  4. Allow/Deny
+       ▼
+┌──────────────┐
+│  Resource    │
+└──────────────┘
+```
+
+#### 2.5.2 Platform-Specific Security
+
+**Development Platform:**
+- Code signing verification
+- Supply chain security (SBOM)
+- Secret scanning
+- Dependency vulnerability checks
+
+**Trading Platform:**
+- Trade authorization (4-eyes principle)
+- Risk limit enforcement (pre-trade)
+- Immutable audit trail (WORM storage)
+- Communications recording
+
+**Healthcare Platform:**
+- PHI access logging (minimum necessary)
+- Data encryption (AES-256)
+- BAA tracking
+- Breach notification workflows
+
+### 2.6 Deployment Architecture
+
+#### 2.6.1 Production Deployment
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CDN (Cloudflare)                        │
+│              Static assets, DDoS protection                │
+└────────────────────┬───────────────────────────────────────┘
+                     │
+┌────────────────────▼───────────────────────────────────────┐
+│               Edge Computing (Vercel Edge)                 │
+│         Next.js server components, API routes              │
+└────────────────────┬───────────────────────────────────────┘
+                     │
+┌────────────────────▼───────────────────────────────────────┐
+│              Application Layer (Kubernetes)                │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │   API Pods   │  │  Service     │  │  Worker      │   │
+│  │   (Node.js)  │  │   Pods       │  │  Pods        │   │
+│  └──────────────┘  └──────────────┘  └──────────────┘   │
+└────────────────────┬───────────────────────────────────────┘
+                     │
+┌────────────────────▼───────────────────────────────────────┐
+│                  Data Layer                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │   Redis      │  │ PostgreSQL   │  │  S3/Object   │   │
+│  │  (Cache)     │  │ (Primary DB) │  │  Storage     │   │
+│  └──────────────┘  └──────────────┘  └──────────────┘   │
+│  ┌──────────────┐  ┌──────────────┐                      │
+│  │ RabbitMQ     │  │ Immutable    │                      │
+│  │ (Msg Bus)    │  │ Audit Log    │                      │
+│  └──────────────┘  └──────────────┘                      │
+└─────────────────────────────────────────────────────────────┘
+                     │
+┌────────────────────▼───────────────────────────────────────┐
+│              Integration Layer                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │    GitHub    │  │  Trading     │  │  Healthcare  │   │
+│  │   API/GH     │  │  Systems     │  │  EHR/PHI     │   │
+│  │   Actions    │  │              │  │              │   │
+│  └──────────────┘  └──────────────┘  └──────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 2.6.2 Technology Stack
+
+**Frontend:**
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Tailwind CSS + shadcn/ui
+- TanStack Query (data fetching)
+- Zustand (state management)
+- Socket.io (real-time)
+
+**Backend:**
+- Node.js 20 LTS
+- Next.js API Routes (serverless)
+- TypeScript
+- Octokit (GitHub SDK)
+- BullMQ (job queues)
+
+**Infrastructure:**
+- Vercel (hosting)
+- Cloudflare (CDN, DNS)
+- Redis (caching, sessions)
+- PostgreSQL (primary database)
+- RabbitMQ (message bus)
+- S3-compatible storage (assets, logs)
 
 ---
 
-## 4. Implementation Plan
+## Part 3: Integration Architecture
 
-### Phase 1: Foundation (Week 1-2)
-1. Set up workflow state management
-2. Create workflow API endpoints
-3. Build GitHub integration layer
-4. Implement intent detection
+### 3.1 GitHub Integration
 
-### Phase 2: Quick Request (Week 2-3)
-1. Build submission form
-2. Create workflow engine
-3. Implement single-agent orchestration
-4. Build progress tracking
+**GitHub App Setup:**
+- App authentication (JWT)
+- Repository permissions (admin for full control)
+- Organization access (configurable)
+- Webhook events (push, pull_request, issues, workflow_run)
 
-### Phase 3: Full Ultrapilot (Week 3-4)
-1. Integrate UltraPilot skill
-2. Implement approval gates
-3. Build multi-phase UI
-4. Create artifact tracking
+**API Usage:**
+- Rate limit handling (5000 requests/hour)
+- Conditional requests (ETag)
+- Pagination for large datasets
+- GraphQL for complex queries
 
-### Phase 4: Task Queue (Week 4-5)
-1. Implement queue system
-2. Integrate ultra:team-lead
-3. Build queue management UI
-4. Create bulk operations
+### 3.2 Ultra-Lead Integration
 
-### Phase 5: Polish (Week 5-6)
-1. Dashboard improvements
-2. Real-time updates
-3. Error handling
-4. Documentation
+**Integration Points:**
+1. **Phase 0 Coordination**
+   - Trigger ultra:analyst and ultra:architect
+   - Collect requirements and architecture
+   - Generate spec.md
 
----
+2. **Phase 1 Planning**
+   - Trigger ultra:planner
+   - Coordinate multi-perspective review
+   - Generate plan-final.md
 
-## 5. GitHub Integration
+3. **Phase 2-5 Orchestration**
+   - Create ULTRA_LEAD session
+   - Monitor AgentMessageBus
+   - Collect progress events
+   - Handle escalations
 
-### 5.1 Issue Templates
+### 3.3 Ultra-Autoloop Integration
 
-**Quick Request Template:**
-```markdown
-# [{TYPE}] {Title}
+**Heartbeat Monitoring:**
+- 60-second cycle monitoring
+- Supervision module status (Scanner, Validator, Trigger, Intervention)
+- Queue depth tracking
+- Health status reporting
 
-**Type:** {feature-request | bug-report}
-**Priority:** {high | medium | low}
-**Project:** {project-name}
-**Agent:** {ultra:architect | ultra:debugger}
+### 3.4 External System Integration
 
-## Description
-{user description}
+**Trading Platform:**
+- FIX protocol (order execution)
+- Market data feeds (real-time)
+- Risk management APIs
+- Compliance reporting systems
 
-## Workflow
-- **Created:** {timestamp}
-- **Agent:** {agent}
-- **Status:** {pending | in-progress | completed}
-
-## Progress
-- [ ] Agent assigned
-- [ ] In progress
-- [ ] Completed
+**Healthcare Platform:**
+- FHIR R4 API (patient data)
+- HL7 v2.x (messages)
+- EHR systems (Epic, Cerner)
+- HIPAA-compliant gateways
 
 ---
 
-**Labels:** `type:{type}`, `priority:{priority}`, `status:{status}`, `agent:{agent}`
-```
+## Part 4: Acceptance Criteria
 
-**Full Ultrapilot Template:**
-```markdown
-# [{TYPE}] {Title}
+### AC-1 Multi-Platform Support
+✓ Platform abstraction layer normalizes data across dev/trading/healthcare
+✓ Platform-specific UI components render correctly
+✓ Cross-platform workflows execute with proper compliance
+✓ Platform switching maintains user context
+✓ New platform registration via configuration (no code changes)
 
-**Workflow:** Full Ultrapilot Project
-**Phase:** {current-phase}
-**Progress:** {progress}%
+### AC-2 Large Team Coordination
+✓ Support 100+ concurrent users
+✓ Multi-organization switching without re-authentication
+✓ Real-time collaboration features (@mentions, shared workspace)
+✓ Queue-based workflow distribution with auto-assignment
+✓ Team hierarchy with inherited permissions
 
-## Requirements
-<!-- Added after Phase 0 -->
+### AC-3 Real-Time Orchestration
+✓ Live HUD shows phase/agent/QA status with sub-second updates
+✓ Automated phase progression based on completion criteria
+✓ Manual override capabilities for administrators
+✓ Workflow control (start/pause/resume/stop/emergency stop)
+✓ Agent assignment and load balancing
 
-### Functional Requirements
-{requirements}
+### AC-4 Compliance & Audit
+✓ HIPAA: PHI access logging, minimum necessary enforcement
+✓ Trading: Immutable audit trail, risk limit enforcement
+✓ Development: SOC2 compliance, change management tracking
+✓ Unified audit framework with platform-specific retention policies
+✓ Compliance report generation (<24 hours)
 
-### Acceptance Criteria
-{criteria}
-
-## Architecture
-<!-- Added after Phase 1 -->
-
-### System Design
-{architecture}
-
-### Technical Decisions
-{decisions}
-
-## Implementation Plan
-<!-- Added after Phase 2 -->
-
-### Tasks
-{tasks}
-
-### Dependencies
-{dependencies}
-
-## Execution Log
-<!-- Updated throughout execution -->
-
-### Phase 0: Requirements
-- [ ] Complete
-- [ ] Approved by user
-- Agent: {ultra:analyst}
-
-### Phase 1: Architecture
-- [ ] Complete
-- [ ] Approved by user
-- Agent: {ultra:architect}
-
-... other phases ...
+### AC-5 Performance & Scalability
+✓ <2s dashboard load time (p95)
+✓ <100ms API response time (p95) for cached data
+✓ <500ms real-time update latency
+✓ Support 100+ concurrent workflows
+✓ Support 1000+ concurrent agents
+✓ Horizontal scaling capability
 
 ---
 
-**Labels:** `type:full-ultrapilot`, `phase:{current-phase}`, `status:{status}`, `agent:{current-agent}`
-```
+## Implementation Phases
 
-### 5.2 Label System
+### Phase 1: Platform Abstraction (4 weeks)
+- Platform registry system
+- Platform adapter interfaces
+- Platform-specific UI components
+- Configuration management
 
-**Workflow Type Labels:**
-- `type:feature-request`
-- `type:bug-report`
-- `type:question`
-- `type:review`
+### Phase 2: Multi-Organization Support (3 weeks)
+- Multi-org authentication
+- Organization switching
+- Cross-org views
+- Org-level isolation
 
-**Workflow Mode Labels:**
-- `workflow:quick`
-- `workflow:full-ultrapilot`
-- `workflow:queue`
+### Phase 3: Enhanced Compliance (4 weeks)
+- HIPAA compliance features
+- FINRA/SOX compliance features
+- Unified audit framework
+- Compliance reporting
 
-**Phase Labels:**
-- `phase:initiation`
-- `phase:requirements`
-- `phase:architecture`
-- `phase:planning`
-- `phase:execution`
-- `phase:verification`
-- `phase:review`
-- `phase:approval`
-- `phase:deployment`
-- `phase:monitoring`
+### Phase 4: Scalability (3 weeks)
+- Horizontal scaling
+- Database sharding
+- Caching optimization
+- Performance tuning
 
-**Status Labels:**
-- `status:pending`
-- `status:in-progress`
-- `status:waiting-approval`
-- `status:approved`
-- `status:rejected`
-- `status:completed`
-- `status:failed`
-
-**Agent Labels:**
-- `agent:ultra-analyst`
-- `agent:ultra-architect`
-- `agent:ultra-planner`
-- `agent:ultra-team-lead`
-- `agent:ultra-executor`
-- `agent:ultra-verifier`
-- `agent:ultra-reviewer`
-
-**Priority Labels:**
-- `priority:critical`
-- `priority:high`
-- `priority:medium`
-- `priority:low`
+### Phase 5: Advanced Collaboration (2 weeks)
+- Real-time collaboration
+- @mentions and notifications
+- Conflict resolution
+- Activity attribution
 
 ---
 
-## 6. User Interface Mockups
+**Status:** Phase 0 Complete
+- ✓ Requirements extracted (ultra:analyst)
+- ✓ Architecture designed (ultra:architect)
+- ✓ Spec document created
 
-### 6.1 Submission Form
-
-```
-┌────────────────────────────────────────────────────────┐
-│              New Feature Request                       │
-├────────────────────────────────────────────────────────┤
-│                                                        │
-│  Title: [_____________________________]               │
-│                                                        │
-│  Type:   ◉ Feature  ○ Bug  ○ Review                    │
-│                                                        │
-│  Priority: ○ Low  ◉ Medium  ○ High  ○ Critical        │
-│                                                        │
-│  Description:                                           │
-│  ┌────────────────────────────────────────────────┐  │
-│  │                                                │  │
-│  └────────────────────────────────────────────────┘  │
-│                                                        │
-│  Workflow:                                              │
-│  ◉ Quick Request (simple, fast)                        │
-│  ○ Full Ultrapilot (complete lifecycle)               │
-│  ○ Add to Queue (multi-task)                          │
-│                                                        │
-│  Detected Intent:                                      │
-│  • Type: feature-request (95%)                          │
-│  • Agent: ultra:architect                               │
-│  • Labels: type:feature, priority:medium               │
-│                                                        │
-│  [Cancel]                               [Submit]      │
-└────────────────────────────────────────────────────────┘
-```
-
-### 6.2 Workflow Dashboard
-
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  Workflows (5 Active)    Tasks (12 in Queue)    Agents (3 Active)  │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  Active Workflows:                                                   │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │ 🏗️ Add OAuth [WF-001]                      [68%]   ultra:executor │ │
-│  │ Phase: Execution │ Started: 2h ago │ ETA: 45min               │ │
-│  │ [Pause] [View] [GitHub #123]                                  │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-│                                                                      │
-│  Task Queue:                                                         │
-│  1. ⚡ Add user profile [high]     ultra:team-lead               │
-│  2. ⚡ Implement search [medium]   ultra:team-lead               │
-│  3. ⚡ Refactor database [low]      ultra:team-lead               │
-│                                                                      │
-└────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 7. Success Criteria
-
-- ✅ User can submit feature request in under 2 minutes
-- ✅ Intent detection accuracy > 90%
-- ✅ GitHub issue created automatically with correct template
-- ✅ Appropriate agent assigned automatically
-- ✅ Real-time progress updates visible in dashboard
-- ✅ User receives notification on completion
-- ✅ Full Ultrapilot workflows pass through all 5 phases with approval gates
-- ✅ Task queue supports parallel execution with dependency management
-- ✅ User can pause/resume/cancel workflows at any time
-- ✅ Complete audit trail in GitHub issues
-- ✅ Dashboard works with existing Relay chat interface
-
----
-
-**Next:** Phase 1 - Planning with Multi-Perspective Review
-
-**Files Created:**
-- `/home/ubuntu/.claude/projects/-home-ubuntu-hscheema1979/87a4b7e8-70ce-4997-aa71-b6dee3c0fc74/tool-results/call_bb062c4cc4e74c448e8c5c8b.json` - Architecture document
-- Requirements merged into this spec.md
+**Next Phase:** Phase 1 - Planning with Multi-Perspective Review

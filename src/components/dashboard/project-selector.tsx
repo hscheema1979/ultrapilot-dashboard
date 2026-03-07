@@ -47,7 +47,7 @@ export function ProjectSelector() {
   if (!isLoading && projects.length === 0) {
     return (
       <Button variant="outline" size="sm" className="min-w-[200px] justify-start" asChild>
-        <a href="/projects" className="flex items-center gap-2">
+        <a href="/dashboard/projects" className="flex items-center gap-2">
           <FolderOpen className="h-4 w-4 text-muted-foreground" />
           <span className="text-muted-foreground">No projects</span>
           <Plus className="h-4 w-4 ml-auto" />
@@ -60,7 +60,7 @@ export function ProjectSelector() {
   if (!isLoading && enabledProjects.length === 0) {
     return (
       <Button variant="outline" size="sm" className="min-w-[200px] justify-start" asChild>
-        <a href="/projects" className="flex items-center gap-2">
+        <a href="/dashboard/projects" className="flex items-center gap-2">
           <AlertCircle className="h-4 w-4 text-status-warning" />
           <span className="text-status-warning">No enabled projects</span>
           <Settings className="h-4 w-4 ml-auto" />
@@ -118,7 +118,7 @@ export function ProjectSelector() {
               className="h-7 px-2 text-xs"
               asChild
             >
-              <a href="/projects">
+              <a href="/dashboard/projects">
                 <Settings className="h-3.5 w-3.5 mr-1" />
                 Manage
               </a>
@@ -220,7 +220,7 @@ export function ProjectSelector() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <a
-            href="/projects"
+            href="/dashboard/projects"
             className="cursor-pointer py-2.5 px-3 flex items-center gap-2 text-sm font-medium"
           >
             <Plus className="h-4 w-4" />

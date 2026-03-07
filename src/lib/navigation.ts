@@ -6,9 +6,28 @@ export interface NavItem {
   icon: string
   badge?: number
   description?: string
+  section?: string  // Add section grouping
+  divider?: boolean  // Add divider before this item
 }
 
 export const NAV_ITEMS: NavItem[] = [
+  // ACTIVE CONTROL - Submit & Monitor
+  {
+    title: "Control Center",
+    href: "/dashboard/control",
+    icon: "Activity",
+    description: "Submit requests and monitor workflows",
+  },
+
+  // WORKFLOW MANAGEMENT
+  {
+    title: "Active Workflows",
+    href: "/dashboard/workflows",
+    icon: "GitBranch",
+    description: "View all workflow runs and their status",
+  },
+
+  // MONITORING & VIEWING
   {
     title: "Dashboard",
     href: "/dashboard",
@@ -16,43 +35,28 @@ export const NAV_ITEMS: NavItem[] = [
     description: "Overview and activity feed",
   },
   {
+    title: "Traces",
+    href: "/dashboard/traces",
+    icon: "Eye",
+    description: "Full GitHub audit trail",
+  },
+  {
     title: "Repositories",
     href: "/dashboard/repos",
     icon: "FolderOpen",
     description: "Browse and manage repositories",
   },
+
+  // WORKSPACE LINKS
   {
-    title: "Projects",
-    href: "/dashboard/projects",
-    icon: "FolderKanban",
-    description: "Project boards and tasks",
+    title: "Workspaces",
+    href: "/dashboard/workspaces",
+    icon: "Terminal",
+    description: "Relay workspaces (Ubuntu, Dev, Projects)",
+    divider: true,
   },
-  {
-    title: "Workflows",
-    href: "/dashboard/workflows",
-    icon: "Workflow",
-    description: "Monitor workflow runs",
-    badge: 0, // Will be updated dynamically
-  },
-  {
-    title: "Autoloop",
-    href: "/dashboard/autoloop",
-    icon: "RefreshCw",
-    description: "Autoloop status and events",
-  },
-  {
-    title: "Metrics",
-    href: "/dashboard/metrics",
-    icon: "BarChart3",
-    description: "Performance metrics",
-  },
-  {
-    title: "Issues",
-    href: "/dashboard/issues",
-    icon: "AlertCircle",
-    description: "Track issues and PRs",
-    badge: 0, // Will be updated dynamically
-  },
+
+  // Settings
   {
     title: "Settings",
     href: "/dashboard/settings",
