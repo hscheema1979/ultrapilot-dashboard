@@ -15,13 +15,6 @@ import {
   Moon,
   ChevronDown,
   Rocket,
-  Menu,
-  FolderOpen,
-  FolderKanban,
-  Workflow,
-  RefreshCw,
-  BarChart3,
-  AlertCircle,
 } from "lucide-react"
 import { useOrgSwitcher } from "@/hooks/use-org-switcher"
 import { Button } from "@/components/ui/button"
@@ -36,7 +29,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
 import { cn } from "@/lib/utils"
 
 interface GithubDashboardHeaderProps {
